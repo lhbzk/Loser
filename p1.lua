@@ -183,7 +183,7 @@ MainFrame.ZIndex = 1
 MainFrame.Visible = false
 _G.RD4X_MainFrame = MainFrame
 --------------------------------------------------------------------------------
--- TELA DE CARREGAMENTO (PREMIUM + SHINE EFFECT)
+-- TELA DE CARREGAMENTO (PREMIUM + SHINE DIAMANTE)
 --------------------------------------------------------------------------------
 if CoreGui:FindFirstChild("RD4X_Loading") then
     CoreGui.RD4X_Loading:Destroy()
@@ -216,7 +216,7 @@ task.spawn(function()
         b.Size = UDim2.new(0, t, 0, t)
         b.Position = UDim2.new(x, 0, 1, 10)
         b.BackgroundColor3 = COR_VERMELHO
-        b.BackgroundTransparency = math.random(40, 80) / 100
+        b.BackgroundTransparency = math.random(50, 90) / 100
         b.BorderSizePixel = 0
 
         local c = Instance.new("UICorner", b)
@@ -234,107 +234,83 @@ end)
 
 -- Container Central
 local container = Instance.new("Frame", bgLoad)
-container.Size = UDim2.new(0, 450, 0, 200)
-container.Position = UDim2.new(0.5, -225, 0.5, -100)
+container.Size = UDim2.new(0, 600, 0, 200)
+container.Position = UDim2.new(0.5, -300, 0.5, -100)
 container.BackgroundTransparency = 1
 
--- Brilho fixo atrás da Logo (sem animação de respiração)
-local glowLogo = Instance.new("ImageLabel", container)
-glowLogo.Size = UDim2.new(0, 150, 0, 150)
-glowLogo.Position = UDim2.new(0.5, -75, 0, -30)
-glowLogo.BackgroundTransparency = 1
-glowLogo.Image = "rbxassetid://1316045217" -- Textura de brilho radial
-glowLogo.ImageColor3 = COR_VERMELHO
-glowLogo.ImageTransparency = 0.4
-glowLogo.ZIndex = 1
-
--- Logo
+-- Logo Limpa (Sem o quadrado vermelho atrás)
 local icone = Instance.new("ImageLabel", container)
-icone.Size = UDim2.new(0, 70, 0, 70)
-icone.Position = UDim2.new(0.5, -35, 0, 0)
-icone.BackgroundColor3 = COR_SECUNDARIA
+icone.Size = UDim2.new(0, 80, 0, 80)
+icone.Position = UDim2.new(0.5, -40, 0, 0)
+icone.BackgroundTransparency = 1
 icone.Image = "rbxassetid://109276734890323"
-icone.ScaleType = Enum.ScaleType.Crop
+icone.ScaleType = Enum.ScaleType.Fit
 icone.ZIndex = 2
 
-local cIc = Instance.new("UICorner", icone)
-cIc.CornerRadius = UDim.new(1, 0)
-
-local sIc = Instance.new("UIStroke", icone)
-sIc.Color = COR_VERMELHO
-sIc.Thickness = 2
-sIc.Transparency = 0.2
-
--- ✨ Efeito de Brilho Passando (Atrás do texto)
-local shineFrame = Instance.new("Frame", container)
-shineFrame.Size = UDim2.new(0, 280, 0, 24)
-shineFrame.Position = UDim2.new(0.5, -140, 0, 86)
-shineFrame.BackgroundTransparency = 1
-shineFrame.ClipsDescendants = true
-shineFrame.ZIndex = 2
-
-local shineImg = Instance.new("ImageLabel", shineFrame)
-shineImg.Size = UDim2.new(1, 0, 2, 0)
-shineImg.Position = UDim2.new(-1, 0, -0.5, 0) -- Começa fora da tela (esquerda)
-shineImg.BackgroundTransparency = 1
-shineImg.Image = "rbxassetid://1316045217" -- Mesmo brilho radial
-shineImg.ImageColor3 = Color3.fromRGB(255, 80, 80) -- Vermelho claro para dar luz
-shineImg.ImageTransparency = 0.3
-shineImg.ZIndex = 2
-
--- Título da Tela (Rd4X Hub $ > Brookhaven RP 🇧🇷 <)
+-- Título
 local titulo = Instance.new("TextLabel", container)
-titulo.Size = UDim2.new(1, 0, 0, 22)
-titulo.Position = UDim2.new(0, 0, 0, 87)
+titulo.Size = UDim2.new(1, 0, 0, 30)
+titulo.Position = UDim2.new(0, 0, 0, 90)
 titulo.BackgroundTransparency = 1
 titulo.Text = "Rd4X Hub $ > Brookhaven RP 🇧🇷 <"
-titulo.TextColor3 = COR_TEXTO
-titulo.TextSize = 14
+titulo.TextColor3 = Color3.fromRGB(220, 220, 220)
+titulo.TextSize = 18
 titulo.Font = Enum.Font.GothamBold
 titulo.ZIndex = 3
 
--- Gradiente no Texto para dar o efeito de "Cintilância"
-local uigTitulo = Instance.new("UIGradient", titulo)
-uigTitulo.Color = ColorSequence.new({
-    ColorSequenceKeypoint.new(0, COR_TEXTO_CINZA),
-    ColorSequenceKeypoint.new(0.4, COR_TEXTO),
-    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)), -- Pico de luz branco
-    ColorSequenceKeypoint.new(0.6, COR_TEXTO),
-    ColorSequenceKeypoint.new(1, COR_TEXTO_CINZA)
-})
-uigTitulo.Offset = Vector2.new(1, 0)
+-- ✨ EFEITO DIAMANTE (Feixe de luz passando)
+local shineContainer = Instance.new("Frame", container)
+shineContainer.Size = UDim2.new(1, 0, 0, 30)
+shineContainer.Position = UDim2.new(0, 0, 0, 90)
+shineContainer.BackgroundTransparency = 1
+shineContainer.ClipsDescendants = true -- Corta o brilho para não sair do texto
+shineContainer.ZIndex = 4
 
--- Animação do Brilho Passando (Loop infinito até carregar)
+-- O feixe inclinado (Rotação de 30 graus)
+local feixeLuz = Instance.new("Frame", shineContainer)
+feixeLuz.Size = UDim2.new(0, 40, 2, 0)
+feixeLuz.Position = UDim2.new(-0.5, 0, -0.5, 0) -- Começa fora da tela (esquerda)
+feixeLuz.Rotation = 30
+feixeLuz.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+feixeLuz.BorderSizePixel = 0
+feixeLuz.ZIndex = 4
+
+-- Gradiente para o feixe ficar transparente nas pontas (efeito de vidro)
+local gradFeixe = Instance.new("UIGradient", feixeLuz)
+gradFeixe.Transparency = NumberSequence.new({
+    NumberSequenceKeypoint.new(0, 1),
+    NumberSequenceKeypoint.new(0.5, 0.4), -- Meio do feixe visível
+    NumberSequenceKeypoint.new(1, 1)
+})
+gradFeixe.Rotation = 90 -- Gradiente de cima para baixo na barra
+
+-- Animação do Feixe Diamante
 task.spawn(function()
-    while shineFrame.Parent do
-        shineImg.Position = UDim2.new(-1, 0, -0.5, 0)
-        uigTitulo.Offset = Vector2.new(1, 0)
-        
-        -- Tempo de 1.5s para a luz cruzar a tela
-        local animTime = TweenInfo.new(1.5, Enum.EasingStyle.Linear)
-        
-        TweenService:Create(shineImg, animTime, {Position = UDim2.new(1, 0, -0.5, 0)}):Play()
-        TweenService:Create(uigTitulo, animTime, {Offset = Vector2.new(-1, 0)}):Play()
-        
-        task.wait(2) -- Espera 2 segundos para o efeito passar de novo
+    while shineContainer.Parent do
+        feixeLuz.Position = UDim2.new(-0.5, 0, -0.5, 0) -- Reseta para a esquerda
+        -- Demora 1.5s para atravessar a tela
+        TweenService:Create(feixeLuz, TweenInfo.new(1.5, Enum.EasingStyle.Linear), {
+            Position = UDim2.new(1.2, 0, -0.5, 0) -- Vai até a direita
+        }):Play()
+        task.wait(2.5) -- Espera um pouco antes de passar de novo
     end
 end)
 
 -- Subtítulo (Status)
 local status = Instance.new("TextLabel", container)
 status.Size = UDim2.new(1, 0, 0, 16)
-status.Position = UDim2.new(0, 0, 0, 115)
+status.Position = UDim2.new(0, 0, 0, 125)
 status.BackgroundTransparency = 1
 status.Text = "Carregando módulos..."
 status.TextColor3 = COR_TEXTO_CINZA
-status.TextSize = 11
+status.TextSize = 12
 status.Font = Enum.Font.Gotham
 status.ZIndex = 2
 
 -- Barra de Progresso
 local barBg = Instance.new("Frame", container)
-barBg.Size = UDim2.new(0, 260, 0, 6)
-barBg.Position = UDim2.new(0.5, -130, 0, 145)
+barBg.Size = UDim2.new(0, 300, 0, 6)
+barBg.Position = UDim2.new(0.5, -150, 0, 155)
 barBg.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
 barBg.BorderSizePixel = 0
 barBg.ZIndex = 2
@@ -382,13 +358,10 @@ task.delay(8.2, function()
     TweenService:Create(bgLoad, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
     TweenService:Create(container, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
     TweenService:Create(titulo, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
-    TweenService:Create(shineFrame, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
     TweenService:Create(status, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
     TweenService:Create(barBg, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
     TweenService:Create(barra, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(icone, TweenInfo.new(0.4), {ImageTransparency = 1, BackgroundTransparency = 1}):Play()
-    TweenService:Create(sIc, TweenInfo.new(0.4), {Transparency = 1}):Play()
-    TweenService:Create(glowLogo, TweenInfo.new(0.4), {ImageTransparency = 1}):Play()
+    TweenService:Create(icone, TweenInfo.new(0.4), {ImageTransparency = 1}):Play()
 
     task.wait(0.4)
     loadingGui:Destroy()
