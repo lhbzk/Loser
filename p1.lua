@@ -439,35 +439,39 @@ UserCredit.TextSize = 9
 UserCredit.Font = Enum.Font.Gotham
 UserCredit.TextXAlignment = Enum.TextXAlignment.Right
 UserCredit.ZIndex = 6
-
-local MinimizeBtn = Instance.new("TextButton", Header)
-MinimizeBtn.Size = UDim2.new(0, 20, 0, 20)
-MinimizeBtn.Position = UDim2.new(1, -48, 0, 9)
+-- Botão Minimizar (Usando Ícone)
+local MinimizeBtn = Instance.new("ImageButton", Header)
+MinimizeBtn.Size = UDim2.new(0, 24, 0, 24)
+MinimizeBtn.Position = UDim2.new(1, -56, 0.5, -12)
 MinimizeBtn.BackgroundTransparency = 1
-MinimizeBtn.Text = "—"
-MinimizeBtn.TextColor3 = COR_TEXTO_CINZA
-MinimizeBtn.TextSize = 14
-MinimizeBtn.Font = Enum.Font.GothamBold
+MinimizeBtn.Image = "rbxassetid://10709790875" -- Ícone de traço
+MinimizeBtn.ImageColor3 = COR_TEXTO_CINZA
 MinimizeBtn.ZIndex = 6
 MinimizeBtn.AutoButtonColor = false
 
-MinimizeBtn.MouseEnter:Connect(function() MinimizeBtn.TextColor3 = COR_TEXTO end)
-MinimizeBtn.MouseLeave:Connect(function() MinimizeBtn.TextColor3 = COR_TEXTO_CINZA end)
+MinimizeBtn.MouseEnter:Connect(function()
+    TweenService:Create(MinimizeBtn, TweenInfo.new(0.15), {ImageColor3 = COR_TEXTO}):Play()
+end)
+MinimizeBtn.MouseLeave:Connect(function()
+    TweenService:Create(MinimizeBtn, TweenInfo.new(0.15), {ImageColor3 = COR_TEXTO_CINZA}):Play()
+end)
 
-local CloseBtn = Instance.new("TextButton", Header)
+-- Botão Fechar (Usando Ícone)
+local CloseBtn = Instance.new("ImageButton", Header)
 CloseBtn.Size = UDim2.new(0, 20, 0, 20)
-CloseBtn.Position = UDim2.new(1, -26, 0, 9)
+CloseBtn.Position = UDim2.new(1, -30, 0.5, -10)
 CloseBtn.BackgroundTransparency = 1
-CloseBtn.Text = "✕"
-CloseBtn.TextColor3 = COR_TEXTO_CINZA
-CloseBtn.TextSize = 12
-CloseBtn.Font = Enum.Font.GothamBold
+CloseBtn.Image = "rbxassetid://10709793092" -- Ícone de X
+CloseBtn.ImageColor3 = COR_TEXTO_CINZA
 CloseBtn.ZIndex = 6
 CloseBtn.AutoButtonColor = false
 
-CloseBtn.MouseEnter:Connect(function() CloseBtn.TextColor3 = COR_VERMELHO end)
-CloseBtn.MouseLeave:Connect(function() CloseBtn.TextColor3 = COR_TEXTO_CINZA end)
-
+CloseBtn.MouseEnter:Connect(function()
+    TweenService:Create(CloseBtn, TweenInfo.new(0.15), {ImageColor3 = COR_VERMELHO}):Play()
+end)
+CloseBtn.MouseLeave:Connect(function()
+    TweenService:Create(CloseBtn, TweenInfo.new(0.15), {ImageColor3 = COR_TEXTO_CINZA}):Play()
+end)
 --------------------------------------------------------------------------------
 -- SIDEBAR MÓVEL
 --------------------------------------------------------------------------------
@@ -478,8 +482,8 @@ Sidebar.Position = UDim2.new(0, 0, 0, 38)
 Sidebar.BackgroundColor3 = COR_SIDEBAR
 Sidebar.BackgroundTransparency = TRANSP_SIDEBAR
 Sidebar.BorderSizePixel = 0
-Sidebar.ScrollBarThickness = 2
-Sidebar.ScrollBarImageColor3 = COR_BORDA
+Sidebar.ScrollBarThickness = 3
+Sidebar.ScrollBarImageColor3 = COR_VERMELHO
 Sidebar.CanvasSize = UDim2.new(0, 0, 0, 0)
 Sidebar.AutomaticCanvasSize = Enum.AutomaticSize.Y
 Sidebar.ZIndex = 5
@@ -547,25 +551,16 @@ sidePadding.PaddingTop = UDim.new(0, 6)
 sidePadding.PaddingBottom = UDim.new(0, 6)
 sidePadding.PaddingLeft = UDim.new(0, 6)
 sidePadding.PaddingRight = UDim.new(0, 6)
-
---------------------------------------------------------------------------------
--- NOTIFICAÇÕES
---------------------------------------------------------------------------------
-local NotifHolder = Instance.new("Frame", ScreenGui)
-NotifHolder.Size = UDim2.new(0, 280, 1, -20)
-NotifHolder.Position = UDim2.new(1, -290, 0, 10)
-NotifHolder.BackgroundTransparency = 1
-_G.RD4X_NotifHolder = NotifHolder
-
-local notifLayout = Instance.new("UIListLayout", NotifHolder)
-notifLayout.VerticalAlignment = Enum.VerticalAlignment.Bottom
-notifLayout.Padding = UDim.new(0, 6)
-
+--NOTIFY
 local function Notify(title, content, duration)
     if _G.RD4X_NotifAtivas == false then return end
     duration = duration or 3
+    
     local frame = Instance.new("Frame", NotifHolder)
     frame.Size = UDim2.new(1, 0, 0, 56)
+    
+    -- 🔥 Começa fora da tela (para a direita)
+    frame.Position = UDim2.new(1.5, 0, 0, 0) 
     frame.BackgroundColor3 = COR_SECUNDARIA
     frame.BackgroundTransparency = 0.15
     frame.BorderSizePixel = 0
@@ -573,8 +568,9 @@ local function Notify(title, content, duration)
     local c = Instance.new("UICorner", frame)
     c.CornerRadius = UDim.new(0, 6)
 
+    -- Borda vermelha combinando com o tema
     local s = Instance.new("UIStroke", frame)
-    s.Color = COR_VERDE
+    s.Color = COR_VERMELHO
     s.Thickness = 1
 
     local titleLbl = Instance.new("TextLabel", frame)
@@ -582,7 +578,7 @@ local function Notify(title, content, duration)
     titleLbl.Position = UDim2.new(0, 10, 0, 6)
     titleLbl.BackgroundTransparency = 1
     titleLbl.Text = "RD4X | " .. tostring(title)
-    titleLbl.TextColor3 = COR_VERDE
+    titleLbl.TextColor3 = COR_VERMELHO
     titleLbl.TextSize = 11
     titleLbl.Font = Enum.Font.GothamBold
     titleLbl.TextXAlignment = Enum.TextXAlignment.Left
@@ -598,18 +594,29 @@ local function Notify(title, content, duration)
     contentLbl.TextXAlignment = Enum.TextXAlignment.Left
     contentLbl.TextWrapped = true
 
+    -- 🔥 Animação de ENTRADA (Desliza para a esquerda)
+    TweenService:Create(frame, TweenInfo.new(0.35, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
+        Position = UDim2.new(0, 0, 0, 0)
+    }):Play()
+
+    -- Tempo de espera e saída
     task.delay(duration, function()
         pcall(function()
-            TweenService:Create(frame, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
-            TweenService:Create(titleLbl, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
-            TweenService:Create(contentLbl, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
-            task.wait(0.45)
+            -- 🔥 Animação de SAÍDA (Desliza de volta para a direita)
+            TweenService:Create(frame, TweenInfo.new(0.3, Enum.EasingStyle.Quad, Enum.EasingDirection.In), {
+                Position = UDim2.new(1.5, 0, 0, 0),
+                BackgroundTransparency = 1
+            }):Play()
+            
+            TweenService:Create(s, TweenInfo.new(0.3), {Transparency = 1}):Play()
+            TweenService:Create(titleLbl, TweenInfo.new(0.3), {TextTransparency = 1}):Play()
+            TweenService:Create(contentLbl, TweenInfo.new(0.3), {TextTransparency = 1}):Play()
+            
+            task.wait(0.35)
             frame:Destroy()
         end)
     end)
 end
-_G.RD4X_Notify = Notify
-
 --------------------------------------------------------------------------------
 -- MINIMIZAR / FECHAR
 --------------------------------------------------------------------------------
@@ -1008,19 +1015,35 @@ _G.RD4X_UI = UI
 -- SISTEMA DE ABAS
 --------------------------------------------------------------------------------
 local function ShowTab(name)
-    for n, f in pairs(TabFrames) do f.Visible = (n == name) end
+    for n, f in pairs(TabFrames) do
+        if n == name then
+            f.Visible = true
+            f.Position = UDim2.new(0, 165, 0, 44) -- Começa um pouco mais para a direita
+            
+            -- 🔥 Animação de Deslizar (Slide-in) Premium
+            TweenService:Create(f, TweenInfo.new(0.25, Enum.EasingStyle.Quint, Enum.EasingDirection.Out), {
+                Position = UDim2.new(0, 156, 0, 44) -- Volta para a posição original
+            }):Play()
+        else
+            f.Visible = false
+        end
+    end
+
     for n, b in pairs(TabButtons) do
         local txt = b:FindFirstChildOfClass("TextLabel")
+        local ind = b:FindFirstChild("Indicador")
+        
         if n == name then
             b.BackgroundTransparency = TRANSP_CARDS
-            if txt then txt.TextColor3 = COR_TEXTO end -- Texto fica branco quando selecionado
+            if txt then txt.TextColor3 = COR_TEXTO end
+            if ind then ind.Visible = true end
         else
             b.BackgroundTransparency = 1
-            if txt then txt.TextColor3 = COR_TEXTO_CINZA end -- Texto fica cinza quando inativo
+            if txt then txt.TextColor3 = COR_TEXTO_CINZA end
+            if ind then ind.Visible = false end
         end
     end
 end
-
 local function CreateTab(name, iconId)
     local btn = Instance.new("TextButton", Sidebar)
     btn.Size = UDim2.new(1, 0, 0, 30) -- Altura ideal para o ícone caber
@@ -1065,7 +1088,7 @@ local function CreateTab(name, iconId)
     content.BackgroundTransparency = 1
     content.BorderSizePixel = 0
     content.ScrollBarThickness = 3
-    content.ScrollBarImageColor3 = COR_BORDA
+    content.ScrollBarImageColor3 = COR_VERMELHO
     content.CanvasSize = UDim2.new(0, 0, 0, 0)
     content.AutomaticCanvasSize = Enum.AutomaticSize.Y
     content.Visible = false
@@ -1174,7 +1197,7 @@ SubComunidade.ZIndex = 7
 
 local BotaoCopyLink = Instance.new("TextButton", infoContent)
 BotaoCopyLink.Size = UDim2.new(1, -4, 0, 34)
-BotaoCopyLink.BackgroundColor3 = COR_VERDE
+BotaoCopyLink.BackgroundColor3 = COR_VERMELHO
 BotaoCopyLink.BackgroundTransparency = TRANSP_BOTAO_VERDE
 BotaoCopyLink.BorderSizePixel = 0
 BotaoCopyLink.Text = "Copy Link"
