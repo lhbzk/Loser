@@ -439,12 +439,13 @@ UserCredit.TextSize = 9
 UserCredit.Font = Enum.Font.Gotham
 UserCredit.TextXAlignment = Enum.TextXAlignment.Right
 UserCredit.ZIndex = 6
--- Botão Minimizar (Usando Ícone)
+-- Botão Minimizar (Usando ImageButton + rbxthumb)
 local MinimizeBtn = Instance.new("ImageButton", Header)
 MinimizeBtn.Size = UDim2.new(0, 24, 0, 24)
 MinimizeBtn.Position = UDim2.new(1, -56, 0.5, -12)
 MinimizeBtn.BackgroundTransparency = 1
-MinimizeBtn.Image = "rbxassetid://15396334032" -- Ícone de traço
+-- ID de um traço (minimizar) padrão:
+MinimizeBtn.Image = "rbxthumb://type=Asset&id=15396334032&w=150&h=150"
 MinimizeBtn.ImageColor3 = COR_TEXTO_CINZA
 MinimizeBtn.ZIndex = 6
 MinimizeBtn.AutoButtonColor = false
@@ -456,17 +457,20 @@ MinimizeBtn.MouseLeave:Connect(function()
     TweenService:Create(MinimizeBtn, TweenInfo.new(0.15), {ImageColor3 = COR_TEXTO_CINZA}):Play()
 end)
 
--- Botão Fechar (Usando Ícone)
+
+-- Botão Fechar (Usando ImageButton + rbxthumb)
 local CloseBtn = Instance.new("ImageButton", Header)
 CloseBtn.Size = UDim2.new(0, 20, 0, 20)
 CloseBtn.Position = UDim2.new(1, -30, 0.5, -10)
 CloseBtn.BackgroundTransparency = 1
-CloseBtn.Image = "rbxassetid://96089977023576" -- Ícone de X
+-- COLOQUE O SEU ID DO "X" AQUI NO LUGAR DESTE:
+CloseBtn.Image = "rbxthumb://type=Asset&id=96089977023576&w=150&h=150" 
 CloseBtn.ImageColor3 = COR_TEXTO_CINZA
 CloseBtn.ZIndex = 6
 CloseBtn.AutoButtonColor = false
 
 CloseBtn.MouseEnter:Connect(function()
+    -- Fica vermelho ao passar o mouse
     TweenService:Create(CloseBtn, TweenInfo.new(0.15), {ImageColor3 = COR_VERMELHO}):Play()
 end)
 CloseBtn.MouseLeave:Connect(function()
