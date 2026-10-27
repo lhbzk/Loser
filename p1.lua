@@ -431,7 +431,7 @@ TitleHeader.ZIndex = 6
 
 local UserCredit = Instance.new("TextLabel", Header)
 UserCredit.Size = UDim2.new(0, 200, 0, 38)
-UserCredit.Position = UDim2.new(1, -250, 0, 0)
+UserCredit.Position = UDim2.new(1, -300, 0, 0)
 UserCredit.BackgroundTransparency = 1
 UserCredit.Text = "By Rd4X Team and J. Epstein"
 UserCredit.TextColor3 = COR_VERDE
