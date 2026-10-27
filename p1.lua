@@ -1010,44 +1010,54 @@ _G.RD4X_UI = UI
 local function ShowTab(name)
     for n, f in pairs(TabFrames) do f.Visible = (n == name) end
     for n, b in pairs(TabButtons) do
+        local txt = b:FindFirstChildOfClass("TextLabel")
         if n == name then
             b.BackgroundTransparency = TRANSP_CARDS
-            b.TextColor3 = COR_TEXTO
+            if txt then txt.TextColor3 = COR_TEXTO end -- Texto fica branco quando selecionado
         else
             b.BackgroundTransparency = 1
-            b.TextColor3 = COR_TEXTO_CINZA
+            if txt then txt.TextColor3 = COR_TEXTO_CINZA end -- Texto fica cinza quando inativo
         end
     end
 end
 
 local function CreateTab(name, iconId)
     local btn = Instance.new("TextButton", Sidebar)
-    btn.Size = UDim2.new(1, 0, 0, 26)
+    btn.Size = UDim2.new(1, 0, 0, 30) -- Altura ideal para o ícone caber
     btn.BackgroundColor3 = COR_SECUNDARIA
     btn.BackgroundTransparency = 1
     btn.BorderSizePixel = 0
-    btn.Text = name -- Texto puro, sem espaços
-    btn.TextColor3 = COR_TEXTO_CINZA
-    btn.TextSize = 10
-    btn.Font = Enum.Font.GothamMedium
-    btn.TextXAlignment = Enum.TextXAlignment.Left
+    btn.Text = "" -- Deixamos o botão vazio para não conflitar com o ícone
     btn.AutoButtonColor = false
     btn.ZIndex = 6
     Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
 
-    -- 📌 Empurra o texto para a direita se tiver ícone
-    local pad = Instance.new("UIPadding", btn)
-    pad.PaddingLeft = UDim.new(0, iconId and 32 or 10)
-
     -- 📸 Ícone da Aba
     if iconId then
-        local img = Instance.new("ImageLabel", btn)
-        img.Size = UDim2.new(0, 16, 0, 16)
-        img.Position = UDim2.new(0, 10, 0.5, -8) -- 10 de distância da borda, centralizado na altura
-        img.BackgroundTransparency = 1
-        img.Image = iconId
-        img.ZIndex = 7
+        local numId = tostring(iconId):match("%d+") -- Pega só os números do ID
+        if numId then
+            local img = Instance.new("ImageLabel", btn)
+            img.Size = UDim2.new(0, 16, 0, 16)
+            img.Position = UDim2.new(0, 10, 0.5, -8) -- 10 pixels da borda, centralizado na altura
+            img.BackgroundTransparency = 1
+            -- 🛠️ O SEGREDO: Usar rbxthumb para converter qualquer ID (Asset ou Imagem)
+            img.Image = "rbxthumb://type=Asset&id=" .. numId .. "&w=150&h=150"
+            img.ZIndex = 7
+        end
     end
+
+    -- 📝 Texto da Aba
+    local txt = Instance.new("TextLabel", btn)
+    txt.Size = UDim2.new(1, -40, 1, 0)
+    txt.Position = UDim2.new(0, iconId and 34 or 10, 0, 0) -- Se tiver ícone, empurra o texto para a direita
+    txt.BackgroundTransparency = 1
+    txt.Text = name
+    txt.TextColor3 = COR_TEXTO_CINZA
+    txt.TextSize = 10
+    txt.Font = Enum.Font.GothamMedium
+    txt.TextXAlignment = Enum.TextXAlignment.Left
+    txt.TextYAlignment = Enum.TextYAlignment.Center
+    txt.ZIndex = 7
 
     local content = Instance.new("ScrollingFrame", MainFrame)
     content.Size = UDim2.new(1, -162, 1, -50)
