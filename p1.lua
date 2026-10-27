@@ -182,9 +182,8 @@ MainFrame.ClipsDescendants = true
 MainFrame.ZIndex = 1
 MainFrame.Visible = false
 _G.RD4X_MainFrame = MainFrame
-
 --------------------------------------------------------------------------------
--- TELA DE CARREGAMENTO
+-- TELA DE CARREGAMENTO (PREMIUM + SHINE EFFECT)
 --------------------------------------------------------------------------------
 if CoreGui:FindFirstChild("RD4X_Loading") then
     CoreGui.RD4X_Loading:Destroy()
@@ -197,71 +196,173 @@ loadingGui.DisplayOrder = 99999
 loadingGui.IgnoreGuiInset = true
 loadingGui.Parent = CoreGui
 
+-- Fundo escuro
 local bgLoad = Instance.new("Frame", loadingGui)
 bgLoad.Size = UDim2.new(1, 0, 1, 0)
-bgLoad.BackgroundColor3 = Color3.fromRGB(10, 10, 14)
+bgLoad.BackgroundColor3 = COR_FUNDO
 bgLoad.BorderSizePixel = 0
 
+-- 🫧 Bolhas de fundo
+local bolhasLoad = Instance.new("Frame", bgLoad)
+bolhasLoad.Size = UDim2.new(1, 0, 1, 0)
+bolhasLoad.BackgroundTransparency = 1
+bolhasLoad.ClipsDescendants = true
+
+task.spawn(function()
+    while bgLoad.Parent do
+        local b = Instance.new("Frame", bolhasLoad)
+        local t = math.random(5, 15)
+        local x = math.random()
+        b.Size = UDim2.new(0, t, 0, t)
+        b.Position = UDim2.new(x, 0, 1, 10)
+        b.BackgroundColor3 = COR_VERMELHO
+        b.BackgroundTransparency = math.random(40, 80) / 100
+        b.BorderSizePixel = 0
+
+        local c = Instance.new("UICorner", b)
+        c.CornerRadius = UDim.new(1, 0)
+        
+        local tw = TweenService:Create(b, TweenInfo.new(math.random(4, 8), Enum.EasingStyle.Linear), {
+            Position = UDim2.new(x + math.random(-5, 5)/100, 0, 0, -20),
+            BackgroundTransparency = 1
+        })
+        tw:Play()
+        tw.Completed:Connect(function() if b then b:Destroy() end end)
+        task.wait(math.random(10, 30) / 100)
+    end
+end)
+
+-- Container Central
 local container = Instance.new("Frame", bgLoad)
-container.Size = UDim2.new(0, 300, 0, 100)
-container.Position = UDim2.new(0.5, -150, 0.5, -50)
+container.Size = UDim2.new(0, 450, 0, 200)
+container.Position = UDim2.new(0.5, -225, 0.5, -100)
 container.BackgroundTransparency = 1
 
-local icone = Instance.new("ImageLabel", container)
-icone.Size = UDim2.new(0, 60, 0, 60)
-icone.Position = UDim2.new(0.5, -30, 0, 0)
-icone.BackgroundTransparency = 1
-icone.Image = "rbxassetid://109276734890323"
-icone.ScaleType = Enum.ScaleType.Fit
+-- Brilho fixo atrás da Logo (sem animação de respiração)
+local glowLogo = Instance.new("ImageLabel", container)
+glowLogo.Size = UDim2.new(0, 150, 0, 150)
+glowLogo.Position = UDim2.new(0.5, -75, 0, -30)
+glowLogo.BackgroundTransparency = 1
+glowLogo.Image = "rbxassetid://1316045217" -- Textura de brilho radial
+glowLogo.ImageColor3 = COR_VERMELHO
+glowLogo.ImageTransparency = 0.4
+glowLogo.ZIndex = 1
 
+-- Logo
+local icone = Instance.new("ImageLabel", container)
+icone.Size = UDim2.new(0, 70, 0, 70)
+icone.Position = UDim2.new(0.5, -35, 0, 0)
+icone.BackgroundColor3 = COR_SECUNDARIA
+icone.Image = "rbxassetid://109276734890323"
+icone.ScaleType = Enum.ScaleType.Crop
+icone.ZIndex = 2
+
+local cIc = Instance.new("UICorner", icone)
+cIc.CornerRadius = UDim.new(1, 0)
+
+local sIc = Instance.new("UIStroke", icone)
+sIc.Color = COR_VERMELHO
+sIc.Thickness = 2
+sIc.Transparency = 0.2
+
+-- ✨ Efeito de Brilho Passando (Atrás do texto)
+local shineFrame = Instance.new("Frame", container)
+shineFrame.Size = UDim2.new(0, 280, 0, 24)
+shineFrame.Position = UDim2.new(0.5, -140, 0, 86)
+shineFrame.BackgroundTransparency = 1
+shineFrame.ClipsDescendants = true
+shineFrame.ZIndex = 2
+
+local shineImg = Instance.new("ImageLabel", shineFrame)
+shineImg.Size = UDim2.new(1, 0, 2, 0)
+shineImg.Position = UDim2.new(-1, 0, -0.5, 0) -- Começa fora da tela (esquerda)
+shineImg.BackgroundTransparency = 1
+shineImg.Image = "rbxassetid://1316045217" -- Mesmo brilho radial
+shineImg.ImageColor3 = Color3.fromRGB(255, 80, 80) -- Vermelho claro para dar luz
+shineImg.ImageTransparency = 0.3
+shineImg.ZIndex = 2
+
+-- Título da Tela (Rd4X Hub $ > Brookhaven RP 🇧🇷 <)
 local titulo = Instance.new("TextLabel", container)
-titulo.Size = UDim2.new(1, 0, 0, 20)
-titulo.Position = UDim2.new(0, 0, 0, 65)
+titulo.Size = UDim2.new(1, 0, 0, 22)
+titulo.Position = UDim2.new(0, 0, 0, 87)
 titulo.BackgroundTransparency = 1
-titulo.Text = "Rd4X Hub"
+titulo.Text = "Rd4X Hub $ > Brookhaven RP 🇧🇷 <"
 titulo.TextColor3 = COR_TEXTO
 titulo.TextSize = 14
 titulo.Font = Enum.Font.GothamBold
+titulo.ZIndex = 3
 
+-- Gradiente no Texto para dar o efeito de "Cintilância"
+local uigTitulo = Instance.new("UIGradient", titulo)
+uigTitulo.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, COR_TEXTO_CINZA),
+    ColorSequenceKeypoint.new(0.4, COR_TEXTO),
+    ColorSequenceKeypoint.new(0.5, Color3.fromRGB(255, 255, 255)), -- Pico de luz branco
+    ColorSequenceKeypoint.new(0.6, COR_TEXTO),
+    ColorSequenceKeypoint.new(1, COR_TEXTO_CINZA)
+})
+uigTitulo.Offset = Vector2.new(1, 0)
+
+-- Animação do Brilho Passando (Loop infinito até carregar)
+task.spawn(function()
+    while shineFrame.Parent do
+        shineImg.Position = UDim2.new(-1, 0, -0.5, 0)
+        uigTitulo.Offset = Vector2.new(1, 0)
+        
+        -- Tempo de 1.5s para a luz cruzar a tela
+        local animTime = TweenInfo.new(1.5, Enum.EasingStyle.Linear)
+        
+        TweenService:Create(shineImg, animTime, {Position = UDim2.new(1, 0, -0.5, 0)}):Play()
+        TweenService:Create(uigTitulo, animTime, {Offset = Vector2.new(-1, 0)}):Play()
+        
+        task.wait(2) -- Espera 2 segundos para o efeito passar de novo
+    end
+end)
+
+-- Subtítulo (Status)
 local status = Instance.new("TextLabel", container)
 status.Size = UDim2.new(1, 0, 0, 16)
-status.Position = UDim2.new(0, 0, 0, 85)
+status.Position = UDim2.new(0, 0, 0, 115)
 status.BackgroundTransparency = 1
-status.Text = "Carregando..."
+status.Text = "Carregando módulos..."
 status.TextColor3 = COR_TEXTO_CINZA
-status.TextSize = 10
+status.TextSize = 11
 status.Font = Enum.Font.Gotham
+status.ZIndex = 2
 
-local barBg = Instance.new("Frame", bgLoad)
-barBg.Size = UDim2.new(0, 240, 0, 6)
-barBg.Position = UDim2.new(0.5, -120, 0.5, 80)
-barBg.BackgroundColor3 = Color3.fromRGB(30, 30, 40)
+-- Barra de Progresso
+local barBg = Instance.new("Frame", container)
+barBg.Size = UDim2.new(0, 260, 0, 6)
+barBg.Position = UDim2.new(0.5, -130, 0, 145)
+barBg.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
 barBg.BorderSizePixel = 0
+barBg.ZIndex = 2
 
 local cBg = Instance.new("UICorner", barBg)
 cBg.CornerRadius = UDim.new(1, 0)
 
 local barra = Instance.new("Frame", barBg)
 barra.Size = UDim2.new(0, 0, 1, 0)
-barra.BackgroundColor3 = COR_VERDE
+barra.BackgroundColor3 = COR_VERMELHO
 barra.BorderSizePixel = 0
+barra.ZIndex = 3
 
 local cB = Instance.new("UICorner", barra)
 cB.CornerRadius = UDim.new(1, 0)
 
-task.spawn(function()
-    while bgLoad.Parent do
-        TweenService:Create(icone, TweenInfo.new(0.8), {Size = UDim2.new(0, 70, 0, 70), Position = UDim2.new(0.5, -35, 0, -5)}):Play()
-        task.wait(0.8)
-        TweenService:Create(icone, TweenInfo.new(0.8), {Size = UDim2.new(0, 60, 0, 60), Position = UDim2.new(0.5, -30, 0, 0)}):Play()
-        task.wait(0.8)
-    end
-end)
+local uig = Instance.new("UIGradient", barra)
+uig.Color = ColorSequence.new({
+    ColorSequenceKeypoint.new(0, Color3.fromRGB(150, 0, 0)),
+    ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 100, 100))
+})
 
+-- Preenchimento da barra
 TweenService:Create(barra, TweenInfo.new(8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
     Size = UDim2.new(1, 0, 1, 0)
 }):Play()
 
+-- Mudança de textos
 task.spawn(function()
     local mensagens = {
         "Carregando módulos...",
@@ -275,15 +376,19 @@ task.spawn(function()
     end
 end)
 
+-- Finalização
 task.delay(8.2, function()
     _G.RD4X_Loading_Completo = true
     TweenService:Create(bgLoad, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
     TweenService:Create(container, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
     TweenService:Create(titulo, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
+    TweenService:Create(shineFrame, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
     TweenService:Create(status, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
     TweenService:Create(barBg, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
     TweenService:Create(barra, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(icone, TweenInfo.new(0.4), {ImageTransparency = 1}):Play()
+    TweenService:Create(icone, TweenInfo.new(0.4), {ImageTransparency = 1, BackgroundTransparency = 1}):Play()
+    TweenService:Create(sIc, TweenInfo.new(0.4), {Transparency = 1}):Play()
+    TweenService:Create(glowLogo, TweenInfo.new(0.4), {ImageTransparency = 1}):Play()
 
     task.wait(0.4)
     loadingGui:Destroy()
@@ -299,48 +404,6 @@ task.delay(8.2, function()
         BackgroundTransparency = TRANSP_FUNDO
     }):Play()
 end)
-
-local cornerMain = Instance.new("UICorner", MainFrame)
-cornerMain.CornerRadius = UDim.new(0, 10)
-
-local strokeMain = Instance.new("UIStroke", MainFrame)
-strokeMain.Color = COR_BORDA
-strokeMain.Thickness = 1.2
-strokeMain.Transparency = 0.3
-_G.RD4X_strokeMain = strokeMain
-
-local isMinimized = false
-local alturaNormal = 400
-local alturaMinimizada = 38
-
-BotaoFlutuante.MouseButton1Click:Connect(function()
-    BotaoFlutuante.Visible = false
-    MainFrame.Visible = true
-end)
-
-local dragging, dragInput, dragStart, startPos
-MainFrame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1 or input.UserInputType == Enum.UserInputType.Touch then
-        dragging = true
-        dragStart = input.Position
-        startPos = MainFrame.Position
-        input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then dragging = false end
-        end)
-    end
-end)
-MainFrame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement or input.UserInputType == Enum.UserInputType.Touch then
-        dragInput = input
-    end
-end)
-UserInputService.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
-        local delta = input.Position - dragStart
-        MainFrame.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
-    end
-end)
-
 --------------------------------------------------------------------------------
 -- BOLHAS FLUTUANTES
 --------------------------------------------------------------------------------
