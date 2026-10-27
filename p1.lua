@@ -907,6 +907,7 @@ function UI.Toggle(parent, opts)
     end)
     return { Set = function(v) state = v update() if opts.Callback then pcall(opts.Callback, v) end end }
 end
+
 function UI.Dropdown(parent, opts)
     local container = Instance.new("Frame", parent)
     container.Size = UDim2.new(1, -4, 0, 32)
@@ -1039,7 +1040,7 @@ function UI.Dropdown(parent, opts)
             end)
         end
         
-        -- 🔥 CORREÇÃO: Define o CanvasSize manualmente
+        -- 🔥 CORREÇÃO: Define o CanvasSize manualmente para não bugar
         local h = math.clamp(#options * 28 + 8, 30, 140)
         listFrame.Size = UDim2.new(1, 0, 0, h)
         listFrame.CanvasSize = UDim2.new(0, 0, 0, #options * 28 + 8)
@@ -1056,7 +1057,9 @@ function UI.Dropdown(parent, opts)
         Refresh = function(newList) refreshOptions(newList) end,
         Set = function(v) selected = v currentLabel.Text = tostring(v) end
     }
-end       
+end
+_G.RD4X_UI = UI
+
 --------------------------------------------------------------------------------
 -- SISTEMA DE ABAS
 --------------------------------------------------------------------------------
@@ -1406,9 +1409,8 @@ BotaoReconectar.MouseButton1Click:Connect(function()
     TeleportService:TeleportToPlaceInstance(game.PlaceId, game.JobId, LocalPlayer)
 end)
 
-print("[RD4X] ✅ Parte 1/4 carregada com sucesso.")
 --------------------------------------------------------------------------------
--- SISTEMA DE AUTO-BIO E AUTO-NOME (Recuperado)
+-- 🛠️ AUTO-BIO E AUTO-NOME (RESTAURADOS)
 --------------------------------------------------------------------------------
 task.spawn(function()
     task.wait(2)
