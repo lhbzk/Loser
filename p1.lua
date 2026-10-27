@@ -907,7 +907,6 @@ function UI.Toggle(parent, opts)
     end)
     return { Set = function(v) state = v update() if opts.Callback then pcall(opts.Callback, v) end end }
 end
-
 function UI.Dropdown(parent, opts)
     local container = Instance.new("Frame", parent)
     container.Size = UDim2.new(1, -4, 0, 32)
@@ -966,8 +965,9 @@ function UI.Dropdown(parent, opts)
     listFrame.ZIndex = 15
     listFrame.ScrollBarThickness = 2
     listFrame.CanvasSize = UDim2.new(0, 0, 0, 0)
-    listFrame.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    -- 🔥 CORREÇÃO: Removemos o AutomaticCanvasSize
     listFrame.ScrollingDirection = Enum.ScrollingDirection.Y
+
     Instance.new("UICorner", listFrame).CornerRadius = UDim.new(0, 6)
     local sl = Instance.new("UIStroke", listFrame)
     sl.Color = COR_BORDA
@@ -987,9 +987,11 @@ function UI.Dropdown(parent, opts)
 
     local function refreshOptions(newOptions)
         options = newOptions or {}
+        
         for _, ch in ipairs(listFrame:GetChildren()) do
             if ch:IsA("TextButton") then ch:Destroy() end
         end
+        
         for _, opt in ipairs(options) do
             local ob = Instance.new("TextButton", listFrame)
             ob.Size = UDim2.new(1, -4, 0, 26)
@@ -1036,8 +1038,11 @@ function UI.Dropdown(parent, opts)
                 if opts.Callback then pcall(opts.Callback, {opt}) end
             end)
         end
+        
+        -- 🔥 CORREÇÃO: Define o CanvasSize manualmente
         local h = math.clamp(#options * 28 + 8, 30, 140)
         listFrame.Size = UDim2.new(1, 0, 0, h)
+        listFrame.CanvasSize = UDim2.new(0, 0, 0, #options * 28 + 8)
     end
 
     refreshOptions(options)
@@ -1051,9 +1056,7 @@ function UI.Dropdown(parent, opts)
         Refresh = function(newList) refreshOptions(newList) end,
         Set = function(v) selected = v currentLabel.Text = tostring(v) end
     }
-end
-_G.RD4X_UI = UI
-
+end       
 --------------------------------------------------------------------------------
 -- SISTEMA DE ABAS
 --------------------------------------------------------------------------------
