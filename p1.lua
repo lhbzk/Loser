@@ -1407,3 +1407,37 @@ BotaoReconectar.MouseButton1Click:Connect(function()
 end)
 
 print("[RD4X] ✅ Parte 1/4 carregada com sucesso.")
+--------------------------------------------------------------------------------
+-- SISTEMA DE AUTO-BIO E AUTO-NOME (Recuperado)
+--------------------------------------------------------------------------------
+task.spawn(function()
+    task.wait(2)
+    local RE = ReplicatedStorage:FindFirstChild("RE")
+    local rpText = RE and RE:FindFirstChild("1RPNam1eTex1t")
+    local rpColor = RE and RE:FindFirstChild("1RPNam1eColo1r")
+    
+    if not rpText then
+        task.wait(2)
+        RE = ReplicatedStorage:FindFirstChild("RE")
+        rpText = RE and RE:FindFirstChild("1RPNam1eTex1t")
+        rpColor = RE and RE:FindFirstChild("1RPNam1eColo1r")
+    end
+
+    if rpText then
+        -- Aplica a Bio
+        pcall(function() rpText:FireServer("RolePlayBio", "Welcome, " .. LocalPlayer.Name) end)
+        task.wait(0.5)
+        
+        -- Aplica o Nome e a Cor
+        if rpColor then pcall(function() rpColor:FireServer("PickingRPNameColor", COR_VERMELHO) end) end
+        task.wait(0.3)
+        
+        if LocalPlayer.UserId == MEU_ID_CREATOR then
+            pcall(function() rpText:FireServer("RolePlayName", "👑 Rd4X Creator◾") end)
+        else
+            pcall(function() rpText:FireServer("RolePlayName", "🇧🇷 Rd4X Hub◾") end)
+        end
+    end
+end)
+
+print("[RD4X] ✅ Parte 1/4 carregada com sucesso.")
