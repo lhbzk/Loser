@@ -183,7 +183,7 @@ MainFrame.ZIndex = 1
 MainFrame.Visible = false
 _G.RD4X_MainFrame = MainFrame
 --------------------------------------------------------------------------------
--- TELA DE CARREGAMENTO (PREMIUM + SHINE DIAMANTE)
+-- TELA DE CARREGAMENTO (PREMIUM + SCANNER EFFECT)
 --------------------------------------------------------------------------------
 if CoreGui:FindFirstChild("RD4X_Loading") then
     CoreGui.RD4X_Loading:Destroy()
@@ -232,85 +232,117 @@ task.spawn(function()
     end
 end)
 
--- Container Central
+-- Container Central (Aumentei para 600 para caber o texto sem quebrar)
 local container = Instance.new("Frame", bgLoad)
-container.Size = UDim2.new(0, 600, 0, 200)
-container.Position = UDim2.new(0.5, -300, 0.5, -100)
+container.Size = UDim2.new(0, 600, 0, 220)
+container.Position = UDim2.new(0.5, -300, 0.5, -110)
 container.BackgroundTransparency = 1
 
--- Logo Limpa (Sem o quadrado vermelho atrás)
+-- LOGO PERFEITAMENTE REDONDA E CENTRALIZADA
 local icone = Instance.new("ImageLabel", container)
 icone.Size = UDim2.new(0, 80, 0, 80)
-icone.Position = UDim2.new(0.5, -40, 0, 0)
+icone.Position = UDim2.new(0.5, -40, 0, 0) -- Centralizado no eixo X
 icone.BackgroundTransparency = 1
 icone.Image = "rbxassetid://109276734890323"
-icone.ScaleType = Enum.ScaleType.Fit
+icone.ScaleType = Enum.ScaleType.Crop -- Crop garante que preencha o círculo sem esticar
 icone.ZIndex = 2
 
--- Título
-local titulo = Instance.new("TextLabel", container)
-titulo.Size = UDim2.new(1, 0, 0, 30)
-titulo.Position = UDim2.new(0, 0, 0, 90)
-titulo.BackgroundTransparency = 1
-titulo.Text = "Rd4X Hub $ > Brookhaven RP 🇧🇷 <"
-titulo.TextColor3 = Color3.fromRGB(220, 220, 220)
-titulo.TextSize = 18
-titulo.Font = Enum.Font.GothamBold
-titulo.ZIndex = 3
+-- O segredo para arredondar a logo
+local cIc = Instance.new("UICorner", icone)
+cIc.CornerRadius = UDim.new(1, 0) -- 1,0 = Círculo perfeito
 
--- ✨ EFEITO DIAMANTE (Feixe de luz passando)
+
+-- TEXTO BASE (Apagado, cinza escuro)
+local textoFundo = Instance.new("TextLabel", container)
+textoFundo.Size = UDim2.new(1, 0, 0, 30)
+textoFundo.Position = UDim2.new(0, 0, 0, 95)
+textoFundo.BackgroundTransparency = 1
+textoFundo.Text = "Rd4X Hub $ > Brookhaven RP 🇧🇷 <"
+textoFundo.TextColor3 = Color3.fromRGB(80, 80, 80) -- Cinza escuro para dar contraste
+textoFundo.TextSize = 16
+textoFundo.Font = Enum.Font.GothamBold
+textoFundo.ZIndex = 2
+
+-- TEXTO BRILHANTE (Oculto por padrão, aparece só onde o feixe toca)
+local textoBrilho = textoFundo:Clone()
+textoBrilho.TextColor3 = Color3.fromRGB(255, 255, 255) -- Branco puro
+textoBrilho.ZIndex = 3
+textoBrilho.Parent = container
+
+-- Máscara de Gradiente (O Segredo do Scanner)
+local uigTexto = Instance.new("UIGradient", textoBrilho)
+-- Faz o texto ser invisível, com um pico de visibilidade no meio
+uigTexto.Transparency = NumberSequence.new({
+    NumberSequenceKeypoint.new(0, 1), -- Invisível na esquerda
+    NumberSequenceKeypoint.new(0.4, 1), 
+    NumberSequenceKeypoint.new(0.5, 0), -- 100% Visível no centro do feixe
+    NumberSequenceKeypoint.new(0.6, 1),
+    NumberSequenceKeypoint.new(1, 1)  -- Invisível na direita
+})
+uigTexto.Offset = Vector2.new(1, 0) -- Começa fora da tela (na direita)
+
+-- EFEITO DIAMANTE (Feixe de luz inclinado)
 local shineContainer = Instance.new("Frame", container)
-shineContainer.Size = UDim2.new(1, 0, 0, 30)
-shineContainer.Position = UDim2.new(0, 0, 0, 90)
+shineContainer.Size = UDim2.new(1, 0, 0, 50)
+shineContainer.Position = UDim2.new(0, 0, 0, 85) -- Alinhado com o texto
 shineContainer.BackgroundTransparency = 1
-shineContainer.ClipsDescendants = true -- Corta o brilho para não sair do texto
+shineContainer.ClipsDescendants = true -- Corta o feixe nas bordas
 shineContainer.ZIndex = 4
 
--- O feixe inclinado (Rotação de 30 graus)
 local feixeLuz = Instance.new("Frame", shineContainer)
 feixeLuz.Size = UDim2.new(0, 40, 2, 0)
-feixeLuz.Position = UDim2.new(-0.5, 0, -0.5, 0) -- Começa fora da tela (esquerda)
-feixeLuz.Rotation = 30
+feixeLuz.Position = UDim2.new(-0.5, 0, -0.5, 0)
+feixeLuz.Rotation = 30 -- Inclinação do diamante
 feixeLuz.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 feixeLuz.BorderSizePixel = 0
 feixeLuz.ZIndex = 4
 
--- Gradiente para o feixe ficar transparente nas pontas (efeito de vidro)
 local gradFeixe = Instance.new("UIGradient", feixeLuz)
 gradFeixe.Transparency = NumberSequence.new({
     NumberSequenceKeypoint.new(0, 1),
-    NumberSequenceKeypoint.new(0.5, 0.4), -- Meio do feixe visível
+    NumberSequenceKeypoint.new(0.5, 0.5), -- Meio visível
     NumberSequenceKeypoint.new(1, 1)
 })
-gradFeixe.Rotation = 90 -- Gradiente de cima para baixo na barra
+gradFeixe.Rotation = 90
 
--- Animação do Feixe Diamante
+-- Animação Sincronizada (Feixe passa e o texto acende junto)
 task.spawn(function()
     while shineContainer.Parent do
-        feixeLuz.Position = UDim2.new(-0.5, 0, -0.5, 0) -- Reseta para a esquerda
-        -- Demora 1.5s para atravessar a tela
-        TweenService:Create(feixeLuz, TweenInfo.new(1.5, Enum.EasingStyle.Linear), {
-            Position = UDim2.new(1.2, 0, -0.5, 0) -- Vai até a direita
+        -- Reinicia as posições
+        feixeLuz.Position = UDim2.new(-0.5, 0, -0.5, 0)
+        uigTexto.Offset = Vector2.new(1, 0) 
+        
+        local animTime = TweenInfo.new(1.5, Enum.EasingStyle.Linear)
+        
+        -- Move o feixe de luz
+        TweenService:Create(feixeLuz, animTime, {
+            Position = UDim2.new(1.2, 0, -0.5, 0)
         }):Play()
-        task.wait(2.5) -- Espera um pouco antes de passar de novo
+        
+        -- Move a máscara do texto na mesma velocidade
+        TweenService:Create(uigTexto, animTime, {
+            Offset = Vector2.new(-1, 0)
+        }):Play()
+        
+        task.wait(2.5) -- Pausa antes de passar de novo
     end
 end)
 
 -- Subtítulo (Status)
 local status = Instance.new("TextLabel", container)
 status.Size = UDim2.new(1, 0, 0, 16)
-status.Position = UDim2.new(0, 0, 0, 125)
+status.Position = UDim2.new(0, 0, 0, 135)
 status.BackgroundTransparency = 1
 status.Text = "Carregando módulos..."
 status.TextColor3 = COR_TEXTO_CINZA
-status.TextSize = 12
+status.TextSize = 11
 status.Font = Enum.Font.Gotham
 status.ZIndex = 2
 
 -- Barra de Progresso
 local barBg = Instance.new("Frame", container)
 barBg.Size = UDim2.new(0, 300, 0, 6)
-barBg.Position = UDim2.new(0.5, -150, 0, 155)
+barBg.Position = UDim2.new(0.5, -150, 0, 165)
 barBg.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
 barBg.BorderSizePixel = 0
 barBg.ZIndex = 2
@@ -327,13 +359,12 @@ barra.ZIndex = 3
 local cB = Instance.new("UICorner", barra)
 cB.CornerRadius = UDim.new(1, 0)
 
-local uig = Instance.new("UIGradient", barra)
-uig.Color = ColorSequence.new({
+local uigBarra = Instance.new("UIGradient", barra)
+uigBarra.Color = ColorSequence.new({
     ColorSequenceKeypoint.new(0, Color3.fromRGB(150, 0, 0)),
     ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 100, 100))
 })
 
--- Preenchimento da barra
 TweenService:Create(barra, TweenInfo.new(8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
     Size = UDim2.new(1, 0, 1, 0)
 }):Play()
@@ -357,7 +388,8 @@ task.delay(8.2, function()
     _G.RD4X_Loading_Completo = true
     TweenService:Create(bgLoad, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
     TweenService:Create(container, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(titulo, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
+    TweenService:Create(textoFundo, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
+    TweenService:Create(textoBrilho, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
     TweenService:Create(status, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
     TweenService:Create(barBg, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
     TweenService:Create(barra, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
@@ -376,6 +408,64 @@ task.delay(8.2, function()
         Position = UDim2.new(0.5, -280, 0.5, -200),
         BackgroundTransparency = TRANSP_FUNDO
     }):Play()
+end)
+-- 🌧️ CHUVA NEON VERMELHA (Efeito de fundo)
+local chuvaContainer = Instance.new("Frame", bgLoad)
+chuvaContainer.Size = UDim2.new(1, 0, 1, 0)
+chuvaContainer.BackgroundTransparency = 1
+chuvaContainer.ClipsDescendants = true
+chuvaContainer.ZIndex = 1
+
+task.spawn(function()
+    while bgLoad.Parent do
+        local gota = Instance.new("Frame", chuvaContainer)
+        
+        -- Tamanho da gota (bem fina e comprida)
+        local largura = math.random(1, 3) / 100 
+        gota.Size = UDim2.new(0, 2, 0, math.random(15, 40))
+        
+        -- Posição inicial: X aleatório, Y no topo (-50)
+        gota.Position = UDim2.new(math.random(), 0, 0, -50)
+        
+        -- Cores da chuva (Vermelho vivo, Vermelho escuro e Branco)
+        local cores = {
+            COR_VERMELHO,
+            Color3.fromRGB(255, 100, 100),
+            Color3.fromRGB(150, 0, 0)
+        }
+        gota.BackgroundColor3 = cores[math.random(1, #cores)]
+        gota.BorderSizePixel = 0
+        
+        -- Inclinação da chuva (como se tivesse vento)
+        gota.Rotation = math.random(15, 30) 
+        
+        -- Transparência inicial
+        gota.BackgroundTransparency = math.random(30, 70) / 100
+        
+        -- Deixa a gota redondinha nas pontas
+        local c = Instance.new("UICorner", gota)
+        c.CornerRadius = UDim.new(1, 0)
+        
+        local zIndex = 1
+
+        -- Animação de queda
+        local tempoQueda = math.random(10, 25) / 10 -- Queda entre 1s e 2.5s
+        
+        local tw = TweenService:Create(gota, TweenInfo.new(tempoQueda, Enum.EasingStyle.Linear), {
+            Position = UDim2.new(gota.Position.X.Scale, 0, 1, 50), -- Cai até passar do fundo
+            BackgroundTransparency = 1 -- Some no final
+        })
+        
+        tw:Play()
+        tw.Completed:Connect(function() 
+            if gota and gota.Parent then 
+                gota:Destroy() 
+            end 
+        end)
+        
+        -- Intervalo entre cada gota (quanto menor, mais densa a chuva)
+        task.wait(math.random(1, 8) / 100)
+    end
 end)
 --------------------------------------------------------------------------------
 -- BOLHAS FLUTUANTES
