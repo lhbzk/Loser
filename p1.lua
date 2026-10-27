@@ -56,7 +56,7 @@ local COR_TEXTO      = Color3.fromRGB(240, 240, 245)
 local COR_TEXTO_CINZA= Color3.fromRGB(140, 140, 150)
 local COR_VERDE      = Color3.fromRGB(46, 204, 113)
 local COR_BORDA      = Color3.fromRGB(40, 40, 48)
-local COR_VERMELHO   = Color3.fromRGB(220, 20, 60)
+local COR_VERMELHO   = Color3.fromRGB(220, 20, 60) -- Cor principal do tema
 
 local TRANSP_FUNDO       = 0.25
 local TRANSP_SIDEBAR     = 0.35
@@ -194,13 +194,11 @@ loadingGui.DisplayOrder = 99999
 loadingGui.IgnoreGuiInset = true
 loadingGui.Parent = CoreGui
 
--- Fundo escuro
 local bgLoad = Instance.new("Frame", loadingGui)
 bgLoad.Size = UDim2.new(1, 0, 1, 0)
 bgLoad.BackgroundColor3 = COR_FUNDO
 bgLoad.BorderSizePixel = 0
 
--- 🌧️ CHUVA NEON VERMELHA (Efeito de fundo)
 local chuvaContainer = Instance.new("Frame", bgLoad)
 chuvaContainer.Size = UDim2.new(1, 0, 1, 0)
 chuvaContainer.BackgroundTransparency = 1
@@ -229,7 +227,6 @@ task.spawn(function()
     end
 end)
 
--- 🫧 Bolhas de fundo
 local bolhasLoad = Instance.new("Frame", bgLoad)
 bolhasLoad.Size = UDim2.new(1, 0, 1, 0)
 bolhasLoad.BackgroundTransparency = 1
@@ -258,14 +255,12 @@ task.spawn(function()
     end
 end)
 
--- Container Central
 local container = Instance.new("Frame", bgLoad)
 container.Size = UDim2.new(0, 600, 0, 220)
 container.Position = UDim2.new(0.5, -300, 0.5, -110)
 container.BackgroundTransparency = 1
 container.ZIndex = 3
 
--- Logo
 local icone = Instance.new("ImageLabel", container)
 icone.Size = UDim2.new(0, 80, 0, 80)
 icone.Position = UDim2.new(0.5, -40, 0, 0)
@@ -275,7 +270,6 @@ icone.ScaleType = Enum.ScaleType.Crop
 icone.ZIndex = 4
 Instance.new("UICorner", icone).CornerRadius = UDim.new(1, 0)
 
--- Texto Base
 local textoFundo = Instance.new("TextLabel", container)
 textoFundo.Size = UDim2.new(1, 0, 0, 30)
 textoFundo.Position = UDim2.new(0, 0, 0, 95)
@@ -286,7 +280,6 @@ textoFundo.TextSize = 16
 textoFundo.Font = Enum.Font.GothamBold
 textoFundo.ZIndex = 4
 
--- Texto Brilhante
 local textoBrilho = textoFundo:Clone()
 textoBrilho.TextColor3 = Color3.fromRGB(255, 255, 255)
 textoBrilho.ZIndex = 5
@@ -299,7 +292,6 @@ uigTexto.Transparency = NumberSequence.new({
 })
 uigTexto.Offset = Vector2.new(1, 0)
 
--- Feixe Diamante
 local shineContainer = Instance.new("Frame", container)
 shineContainer.Size = UDim2.new(1, 0, 0, 50)
 shineContainer.Position = UDim2.new(0, 0, 0, 85)
@@ -332,7 +324,6 @@ task.spawn(function()
     end
 end)
 
--- Status e Barra
 local status = Instance.new("TextLabel", container)
 status.Size = UDim2.new(1, 0, 0, 16)
 status.Position = UDim2.new(0, 0, 0, 135)
@@ -486,7 +477,6 @@ UserCredit.Font = Enum.Font.Gotham
 UserCredit.TextXAlignment = Enum.TextXAlignment.Right
 UserCredit.ZIndex = 6
 
--- Botão Minimizar
 local MinimizeBtn = Instance.new("ImageButton", Header)
 MinimizeBtn.Size = UDim2.new(0, 24, 0, 24)
 MinimizeBtn.Position = UDim2.new(1, -56, 0.5, -12)
@@ -499,7 +489,6 @@ MinimizeBtn.AutoButtonColor = false
 MinimizeBtn.MouseEnter:Connect(function() TweenService:Create(MinimizeBtn, TweenInfo.new(0.15), {ImageColor3 = COR_TEXTO}):Play() end)
 MinimizeBtn.MouseLeave:Connect(function() TweenService:Create(MinimizeBtn, TweenInfo.new(0.15), {ImageColor3 = COR_TEXTO_CINZA}):Play() end)
 
--- Botão Fechar
 local CloseBtn = Instance.new("ImageButton", Header)
 CloseBtn.Size = UDim2.new(0, 20, 0, 20)
 CloseBtn.Position = UDim2.new(1, -30, 0.5, -10)
@@ -613,7 +602,7 @@ local function Notify(title, content, duration)
     Instance.new("UICorner", frame).CornerRadius = UDim.new(0, 6)
 
     local s = Instance.new("UIStroke", frame)
-    s.Color = COR_VERMELHO
+    s.Color = _G.RD4X_COR_VERMELHO -- Usa a cor global atualizada
     s.Thickness = 1
 
     local titleLbl = Instance.new("TextLabel", frame)
@@ -621,7 +610,7 @@ local function Notify(title, content, duration)
     titleLbl.Position = UDim2.new(0, 10, 0, 6)
     titleLbl.BackgroundTransparency = 1
     titleLbl.Text = "RD4X | " .. tostring(title)
-    titleLbl.TextColor3 = COR_VERMELHO
+    titleLbl.TextColor3 = _G.RD4X_COR_VERMELHO
     titleLbl.TextSize = 11
     titleLbl.Font = Enum.Font.GothamBold
     titleLbl.TextXAlignment = Enum.TextXAlignment.Left
@@ -666,7 +655,7 @@ MinimizeBtn.MouseButton1Click:Connect(function()
         Sidebar.Visible = false
         SidebarHandle.Visible = false
         for _, c in pairs(TabFrames) do c.Visible = false end
-        MinimizeBtn.ImageColor3 = COR_VERDE
+        MinimizeBtn.ImageColor3 = COR_VERMELHO
     else
         TweenService:Create(MainFrame, TweenInfo.new(0.35, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(0, 560, 0, alturaNormal)}):Play()
         task.wait(0.35)
@@ -906,7 +895,7 @@ function UI.Toggle(parent, opts)
 
     local state = opts.CurrentValue or false
     local function update()
-        TweenService:Create(switchBg, TweenInfo.new(0.2), {BackgroundColor3 = state and COR_VERMELHO or Color3.fromRGB(60, 60, 70)}):Play()
+        TweenService:Create(switchBg, TweenInfo.new(0.2), {BackgroundColor3 = state and _G.RD4X_COR_VERMELHO or Color3.fromRGB(60, 60, 70)}):Play()
         TweenService:Create(knob, TweenInfo.new(0.2), {Position = state and UDim2.new(1, -16, 0.5, -7) or UDim2.new(0, 2, 0.5, -7)}):Play()
     end
     update()
@@ -1003,18 +992,39 @@ function UI.Dropdown(parent, opts)
         end
         for _, opt in ipairs(options) do
             local ob = Instance.new("TextButton", listFrame)
-            ob.Size = UDim2.new(1, -4, 0, 24)
+            ob.Size = UDim2.new(1, -4, 0, 26)
             ob.BackgroundColor3 = COR_SECUNDARIA
             ob.BackgroundTransparency = 1
             ob.BorderSizePixel = 0
-            ob.Text = tostring(opt)
-            ob.TextColor3 = COR_TEXTO
-            ob.TextSize = 10
-            ob.Font = Enum.Font.Gotham
-            ob.TextXAlignment = Enum.TextXAlignment.Left
+            ob.Text = ""
             ob.AutoButtonColor = false
             ob.ZIndex = 16
-            Instance.new("UIPadding", ob).PaddingLeft = UDim.new(0, 8)
+            Instance.new("UICorner", ob).CornerRadius = UDim.new(0, 4)
+
+            -- 🔥 AVATAR 2D AUTOMÁTICO NA LISTA
+            local p = Players:FindFirstChild(tostring(opt))
+            local txtPadding = 8
+            if p then
+                local img = Instance.new("ImageLabel", ob)
+                img.Size = UDim2.new(0, 18, 0, 18)
+                img.Position = UDim2.new(0, 4, 0.5, -9)
+                img.BackgroundColor3 = COR_FUNDO
+                img.Image = "rbxthumb://type=AvatarHeadShot&id=" .. p.UserId .. "&w=150&h=150"
+                img.ZIndex = 17
+                Instance.new("UICorner", img).CornerRadius = UDim.new(1, 0)
+                txtPadding = 26
+            end
+
+            local txt = Instance.new("TextLabel", ob)
+            txt.Size = UDim2.new(1, -txtPadding, 1, 0)
+            txt.Position = UDim2.new(0, txtPadding, 0, 0)
+            txt.BackgroundTransparency = 1
+            txt.Text = tostring(opt)
+            txt.TextColor3 = COR_TEXTO
+            txt.TextSize = 10
+            txt.Font = Enum.Font.Gotham
+            txt.TextXAlignment = Enum.TextXAlignment.Left
+            txt.ZIndex = 17
 
             ob.MouseEnter:Connect(function() ob.BackgroundTransparency = 0.4 end)
             ob.MouseLeave:Connect(function() ob.BackgroundTransparency = 1 end)
@@ -1026,7 +1036,7 @@ function UI.Dropdown(parent, opts)
                 if opts.Callback then pcall(opts.Callback, {opt}) end
             end)
         end
-        local h = math.clamp(#options * 26 + 8, 30, 140)
+        local h = math.clamp(#options * 28 + 8, 30, 140)
         listFrame.Size = UDim2.new(1, 0, 0, h)
     end
 
