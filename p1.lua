@@ -684,62 +684,56 @@ function UI.Paragraph(parent, opts)
     return lbl
 end
 
-function UI.Button(parent, opts)
-    local container = Instance.new("TextButton", parent)
-    container.Size = UDim2.new(1, -4, 0, 36) -- Um pouco menor que o original (era 44)
-    container.BackgroundColor3 = COR_SECUNDARIA
-    container.BackgroundTransparency = TRANSP_CARDS
-    container.BorderSizePixel = 0
-    container.Text = ""
-    container.AutoButtonColor = false
-    container.ZIndex = 6
-    Instance.new("UICorner", container).CornerRadius = UDim.new(0, 6)
+local function CreateTab(name, iconId)
+    local btn = Instance.new("TextButton", Sidebar)
+    btn.Size = UDim2.new(1, 0, 0, 26)
+    btn.BackgroundColor3 = COR_SECUNDARIA
+    btn.BackgroundTransparency = 1
+    btn.BorderSizePixel = 0
+    btn.Text = name -- Texto puro, sem espaços
+    btn.TextColor3 = COR_TEXTO_CINZA
+    btn.TextSize = 10
+    btn.Font = Enum.Font.GothamMedium
+    btn.TextXAlignment = Enum.TextXAlignment.Left
+    btn.AutoButtonColor = false
+    btn.ZIndex = 6
+    Instance.new("UICorner", btn).CornerRadius = UDim.new(0, 6)
 
-    -- Título
-    local title = Instance.new("TextLabel", container)
-    title.Size = UDim2.new(1, -30, 0, 16)
-    title.Position = UDim2.new(0, 10, 0, 4)
-    title.BackgroundTransparency = 1
-    title.Text = opts.Name or "Botão"
-    title.TextColor3 = COR_TEXTO
-    title.TextSize = 11
-    title.Font = Enum.Font.GothamBold
-    title.TextXAlignment = Enum.TextXAlignment.Left
-    title.ZIndex = 7
+    -- 📌 Empurra o texto para a direita se tiver ícone
+    local pad = Instance.new("UIPadding", btn)
+    pad.PaddingLeft = UDim.new(0, iconId and 32 or 10)
 
-    -- Descrição
-    local desc = Instance.new("TextLabel", container)
-    desc.Size = UDim2.new(1, -30, 0, 14)
-    desc.Position = UDim2.new(0, 10, 0, 20)
-    desc.BackgroundTransparency = 1
-    desc.Text = opts.Description or ""
-    desc.TextColor3 = COR_TEXTO_CINZA
-    desc.TextSize = 9
-    desc.Font = Enum.Font.Gotham
-    desc.TextXAlignment = Enum.TextXAlignment.Left
-    desc.ZIndex = 7
+    -- 📸 Ícone da Aba
+    if iconId then
+        local img = Instance.new("ImageLabel", btn)
+        img.Size = UDim2.new(0, 16, 0, 16)
+        img.Position = UDim2.new(0, 10, 0.5, -8) -- 10 de distância da borda, centralizado na altura
+        img.BackgroundTransparency = 1
+        img.Image = iconId
+        img.ZIndex = 7
+    end
 
-    -- Seta
-    local arrow = Instance.new("TextLabel", container)
-    arrow.Size = UDim2.new(0, 20, 1, 0)
-    arrow.Position = UDim2.new(1, -25, 0, 0)
-    arrow.BackgroundTransparency = 1
-    arrow.Text = ">"
-    arrow.TextColor3 = COR_TEXTO_CINZA
-    arrow.TextSize = 14
-    arrow.Font = Enum.Font.GothamBold
-    arrow.ZIndex = 7
+    local content = Instance.new("ScrollingFrame", MainFrame)
+    content.Size = UDim2.new(1, -162, 1, -50)
+    content.Position = UDim2.new(0, 156, 0, 44)
+    content.BackgroundTransparency = 1
+    content.BorderSizePixel = 0
+    content.ScrollBarThickness = 3
+    content.ScrollBarImageColor3 = COR_BORDA
+    content.CanvasSize = UDim2.new(0, 0, 0, 0)
+    content.AutomaticCanvasSize = Enum.AutomaticSize.Y
+    content.Visible = false
+    content.ZIndex = 5
 
-    -- Hover e Clique
-    container.MouseEnter:Connect(function() TweenService:Create(container, TweenInfo.new(0.15), {BackgroundColor3 = Color3.fromRGB(50, 50, 62), BackgroundTransparency = 0.25}):Play() end)
-    container.MouseLeave:Connect(function() TweenService:Create(container, TweenInfo.new(0.15), {BackgroundColor3 = COR_SECUNDARIA, BackgroundTransparency = TRANSP_CARDS}):Play() end)
-    container.MouseButton1Click:Connect(function()
-        if _G.RD4X_SomAtivo ~= false then
-            pcall(function() local s = Instance.new("Sound", SoundService) s.SoundId = "rbxassetid://3665143844" s.Volume = 0.3 s:Play() task.delay(2, function() s:Destroy() end) end)
-        end
-        if opts.Callback then pcall(opts.Callback) end
-    end)
-    return container
+    local layout = Instance.new("UIListLayout", content)
+    layout.Padding = UDim.new(0, 6)
+    layout.SortOrder = Enum.SortOrder.LayoutOrder
+
+    TabFrames[name] = content
+    TabButtons[name] = btn
+
+    btn.MouseButton1Click:Connect(function() ShowTab(name) end)
+    return content
 end
 
 function UI.Input(parent, opts)
@@ -1045,11 +1039,12 @@ local function CreateTab(name, iconId)
 end
 
 local Tabs = {
+local Tabs = {
     Principal = CreateTab("Informações", "rbxassetid://10941503192"),
     Player    = CreateTab("Jogador", "rbxassetid://7992557371"),
     Skins = CreateTab("Skins", "rbxassetid://11955919656"),
     Servidor  = CreateTab("Servidor", "rbxassetid://14095421789"),
-    Carros    = CreateTab("Veículo", "82734412385826"),
+    Carros    = CreateTab("Veículo", "rbxassetid://82734412385826"), -- Corrigido com rbxassetid://
     Casas     = CreateTab("Casa", "rbxassetid://18923169586"),
     SomAll = CreateTab("SomAll", "rbxassetid://137483969436938"),
     Musicas   = CreateTab("Música", "rbxassetid://105472378838470"),
@@ -1059,7 +1054,7 @@ local Tabs = {
     Scripts   = CreateTab("Scripts", "rbxassetid://5650870659"),
     Teleportes = CreateTab("Teleportes", "rbxassetid://6723742959"),
     Config = CreateTab("Config", "rbxassetid://134966548587596")
-}
+    }
 ShowTab("Informações")
 
 _G.RD4X_Tabs = Tabs
