@@ -18,6 +18,237 @@ local SoundService = game:GetService("SoundService")
 local Camera = Workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 
+--------------------------------------------------------------------------------
+-- RD4X | VERIFICAÇÃO DE COMPATIBILIDADE
+--------------------------------------------------------------------------------
+
+local BROOKHAVEN_PLACE_ID = 4924922222
+local BROOKHAVEN_UNIVERSE_ID = 1686885941
+
+local jogoCompativel =
+    game.PlaceId == BROOKHAVEN_PLACE_ID
+    or game.GameId == BROOKHAVEN_UNIVERSE_ID
+
+if not jogoCompativel then
+
+    -- Interface de incompatibilidade
+    local incompatGui = Instance.new("ScreenGui")
+    incompatGui.Name = "RD4X_Incompatible"
+    incompatGui.IgnoreGuiInset = true
+    incompatGui.ResetOnSpawn = false
+    incompatGui.DisplayOrder = 999999
+
+    incompatGui.Parent = CoreGui
+
+    local function criar(class, props, target)
+        local obj = Instance.new(class)
+
+        for k, v in pairs(props) do
+            obj[k] = v
+        end
+
+        obj.Parent = target
+        return obj
+    end
+
+    local function animar(obj, tempo, props)
+        local t = TweenService:Create(
+            obj,
+            TweenInfo.new(
+                tempo,
+                Enum.EasingStyle.Quart,
+                Enum.EasingDirection.Out
+            ),
+            props
+        )
+
+        t:Play()
+        return t
+    end
+
+    -- Fundo
+    local bg = criar("Frame", {
+        Size = UDim2.fromScale(1, 1),
+        BackgroundColor3 = Color3.fromRGB(8, 8, 11),
+        BackgroundTransparency = 1,
+        BorderSizePixel = 0
+    }, incompatGui)
+
+    -- Brilho central
+    local glow = criar("Frame", {
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Position = UDim2.fromScale(0.5, 0.5),
+        Size = UDim2.fromOffset(300, 240),
+        BackgroundColor3 = Color3.fromRGB(100, 20, 12),
+        BackgroundTransparency = 0.88,
+        BorderSizePixel = 0
+    }, bg)
+
+    criar("UICorner", {
+        CornerRadius = UDim.new(1, 0)
+    }, glow)
+
+    -- Partículas
+    local particleColors = {
+        Color3.fromRGB(180, 35, 25),
+        Color3.fromRGB(210, 65, 35),
+        Color3.fromRGB(160, 120, 55)
+    }
+
+    for i = 1, 15 do
+        local size = math.random(2, 4)
+
+        local particle = criar("Frame", {
+            Size = UDim2.fromOffset(size, size),
+            Position = UDim2.fromScale(math.random(), math.random()),
+            BackgroundColor3 = particleColors[math.random(1, 3)],
+            BackgroundTransparency = 0.4,
+            BorderSizePixel = 0
+        }, bg)
+
+        criar("UICorner", {
+            CornerRadius = UDim.new(1, 0)
+        }, particle)
+
+        task.spawn(function()
+            while incompatGui.Parent and particle.Parent do
+                animar(particle, math.random(3, 6), {
+                    Position = UDim2.fromScale(
+                        math.random(5, 95) / 100,
+                        math.random(5, 95) / 100
+                    ),
+                    BackgroundTransparency = math.random(30, 80) / 100
+                })
+
+                task.wait(math.random(3, 5))
+            end
+        end)
+    end
+
+    -- Conteúdo
+    local content = criar("Frame", {
+        AnchorPoint = Vector2.new(0.5, 0.5),
+        Position = UDim2.fromScale(0.5, 0.55),
+        Size = UDim2.fromOffset(310, 205),
+        BackgroundTransparency = 1
+    }, bg)
+
+    -- Logo
+    criar("TextLabel", {
+        AnchorPoint = Vector2.new(0.5, 0),
+        Position = UDim2.new(0.5, 0, 0, 0),
+        Size = UDim2.fromOffset(280, 55),
+        BackgroundTransparency = 1,
+        Text = "RD4X",
+        TextColor3 = Color3.fromRGB(225, 190, 115),
+        TextSize = 43,
+        Font = Enum.Font.GothamBlack
+    }, content)
+
+    -- HUB
+    criar("TextLabel", {
+        AnchorPoint = Vector2.new(0.5, 0),
+        Position = UDim2.new(0.5, 0, 0, 43),
+        Size = UDim2.fromOffset(200, 18),
+        BackgroundTransparency = 1,
+        Text = "H  U  B",
+        TextColor3 = Color3.fromRGB(220, 220, 220),
+        TextSize = 11,
+        Font = Enum.Font.GothamMedium
+    }, content)
+
+    -- Linha
+    criar("Frame", {
+        AnchorPoint = Vector2.new(0.5, 0),
+        Position = UDim2.new(0.5, 0, 0, 72),
+        Size = UDim2.fromOffset(65, 2),
+        BackgroundColor3 = Color3.fromRGB(190, 45, 30),
+        BorderSizePixel = 0
+    }, content)
+
+    -- Mensagem
+    criar("TextLabel", {
+        AnchorPoint = Vector2.new(0.5, 0),
+        Position = UDim2.new(0.5, 0, 0, 88),
+        Size = UDim2.fromOffset(300, 40),
+        BackgroundTransparency = 1,
+        Text = "Jogo incompatível!",
+        TextColor3 = Color3.fromRGB(230, 75, 60),
+        TextSize = 17,
+        Font = Enum.Font.GothamBold
+    }, content)
+
+    -- Descrição
+    criar("TextLabel", {
+        AnchorPoint = Vector2.new(0.5, 0),
+        Position = UDim2.new(0.5, 0, 0, 126),
+        Size = UDim2.fromOffset(300, 35),
+        BackgroundTransparency = 1,
+        Text = "O RD4X é incompatível com esse jogo.\nExecute no Brookhaven.",
+        TextColor3 = Color3.fromRGB(190, 190, 195),
+        TextSize = 12,
+        Font = Enum.Font.Gotham,
+        TextWrapped = true
+    }, content)
+
+    -- Botão
+    local button = criar("TextButton", {
+        AnchorPoint = Vector2.new(0.5, 0),
+        Position = UDim2.new(0.5, 0, 0, 169),
+        Size = UDim2.fromOffset(105, 27),
+        BackgroundColor3 = Color3.fromRGB(125, 30, 23),
+        BackgroundTransparency = 0.1,
+        Text = "OK",
+        TextColor3 = Color3.fromRGB(255, 255, 255),
+        TextSize = 11,
+        Font = Enum.Font.GothamBold,
+        AutoButtonColor = true
+    }, content)
+
+    criar("UICorner", {
+        CornerRadius = UDim.new(0, 5)
+    }, button)
+
+    -- Animação de entrada
+    animar(bg, 0.6, {
+        BackgroundTransparency = 0
+    })
+
+    animar(content, 0.7, {
+        Position = UDim2.fromScale(0.5, 0.5)
+    })
+
+    -- Fechamento
+    local fechando = false
+
+    local function fechar()
+        if fechando then return end
+        fechando = true
+
+        animar(bg, 0.4, {
+            BackgroundTransparency = 1
+        })
+
+        animar(content, 0.35, {
+            Position = UDim2.fromScale(0.5, 0.55)
+        })
+
+        task.wait(0.45)
+
+        incompatGui:Destroy()
+    end
+
+    button.MouseButton1Click:Connect(fechar)
+
+    -- Impede a execução do restante do RD4X
+    return
+end
+
+--------------------------------------------------------------------------------
+-- BROOKHAVEN CONFIRMADO: CONTINUA A EXECUÇÃO NORMAL
+--------------------------------------------------------------------------------
+
+
 local MEU_ID_CREATOR = 4200878493
 local API_URL = "https://rd4x-api.onrender.com"
 
@@ -187,215 +418,338 @@ _G.RD4X_MainFrame = MainFrame
 --------------------------------------------------------------------------------
 -- TELA DE CARREGAMENTO (PREMIUM + SCANNER EFFECT + CHUVA)
 --------------------------------------------------------------------------------
-local loadingGui = Instance.new("ScreenGui")
-loadingGui.Name = "RD4X_Loading"
-loadingGui.ResetOnSpawn = false
-loadingGui.DisplayOrder = 99999
-loadingGui.IgnoreGuiInset = true
-loadingGui.Parent = CoreGui
 
-local bgLoad = Instance.new("Frame", loadingGui)
-bgLoad.Size = UDim2.new(1, 0, 1, 0)
-bgLoad.BackgroundColor3 = COR_FUNDO
-bgLoad.BorderSizePixel = 0
+-- RD4X HUB | LOADING SCREEN PREVIEW
+-- Prévia visual independente
 
-local chuvaContainer = Instance.new("Frame", bgLoad)
-chuvaContainer.Size = UDim2.new(1, 0, 1, 0)
-chuvaContainer.BackgroundTransparency = 1
-chuvaContainer.ClipsDescendants = true
-chuvaContainer.ZIndex = 1
+local Players = game:GetService("Players")
+local TweenService = game:GetService("TweenService")
+local CoreGui = game:GetService("CoreGui")
 
-task.spawn(function()
-    while bgLoad.Parent do
-        local gota = Instance.new("Frame", chuvaContainer)
-        gota.Size = UDim2.new(0, 2, 0, math.random(15, 40))
-        gota.Position = UDim2.new(math.random(), 0, 0, -50)
-        local cores = {COR_VERMELHO, Color3.fromRGB(255, 100, 100), Color3.fromRGB(150, 0, 0)}
-        gota.BackgroundColor3 = cores[math.random(1, #cores)]
-        gota.BorderSizePixel = 0
-        gota.Rotation = math.random(15, 30) 
-        gota.BackgroundTransparency = math.random(30, 70) / 100
-        Instance.new("UICorner", gota).CornerRadius = UDim.new(1, 0)
-        
-        local tw = TweenService:Create(gota, TweenInfo.new(math.random(10, 25)/10, Enum.EasingStyle.Linear), {
-            Position = UDim2.new(gota.Position.X.Scale, 0, 1, 50),
-            BackgroundTransparency = 1
-        })
-        tw:Play()
-        tw.Completed:Connect(function() if gota then gota:Destroy() end end)
-        task.wait(math.random(1, 8) / 100)
+local player = Players.LocalPlayer
+
+-- Remove uma prévia anterior
+pcall(function()
+    local parent = gethui and gethui() or CoreGui
+    local old = parent:FindFirstChild("RD4X_LoadingPreview")
+    if old then old:Destroy() end
+end)
+
+-- GUI
+local gui = Instance.new("ScreenGui")
+gui.Name = "RD4X_LoadingPreview"
+gui.IgnoreGuiInset = true
+gui.ResetOnSpawn = false
+gui.DisplayOrder = 999999
+
+local parent
+pcall(function()
+    if gethui then
+        parent = gethui()
     end
 end)
 
-local bolhasLoad = Instance.new("Frame", bgLoad)
-bolhasLoad.Size = UDim2.new(1, 0, 1, 0)
-bolhasLoad.BackgroundTransparency = 1
-bolhasLoad.ClipsDescendants = true
-bolhasLoad.ZIndex = 2
+if not parent then
+    parent = CoreGui
+end
 
-task.spawn(function()
-    while bgLoad.Parent do
-        local b = Instance.new("Frame", bolhasLoad)
-        local t = math.random(5, 15)
-        local x = math.random()
-        b.Size = UDim2.new(0, t, 0, t)
-        b.Position = UDim2.new(x, 0, 1, 10)
-        b.BackgroundColor3 = COR_VERMELHO
-        b.BackgroundTransparency = math.random(50, 90) / 100
-        b.BorderSizePixel = 0
-        Instance.new("UICorner", b).CornerRadius = UDim.new(1, 0)
-        
-        local tw = TweenService:Create(b, TweenInfo.new(math.random(4, 8), Enum.EasingStyle.Linear), {
-            Position = UDim2.new(x + math.random(-5, 5)/100, 0, 0, -20),
-            BackgroundTransparency = 1
-        })
-        tw:Play()
-        tw.Completed:Connect(function() if b then b:Destroy() end end)
-        task.wait(math.random(10, 30) / 100)
+gui.Parent = parent
+
+local function create(class, props, parentObject)
+    local obj = Instance.new(class)
+    for k, v in pairs(props) do
+        obj[k] = v
     end
-end)
+    obj.Parent = parentObject
+    return obj
+end
 
-local container = Instance.new("Frame", bgLoad)
-container.Size = UDim2.new(0, 600, 0, 220)
-container.Position = UDim2.new(0.5, -300, 0.5, -110)
-container.BackgroundTransparency = 1
-container.ZIndex = 3
+local function tween(obj, time, props)
+    local t = TweenService:Create(
+        obj,
+        TweenInfo.new(time, Enum.EasingStyle.Quart, Enum.EasingDirection.Out),
+        props
+    )
+    t:Play()
+    return t
+end
 
-local icone = Instance.new("ImageLabel", container)
-icone.Size = UDim2.new(0, 80, 0, 80)
-icone.Position = UDim2.new(0.5, -40, 0, 0)
-icone.BackgroundTransparency = 1
-icone.Image = "rbxassetid://109276734890323"
-icone.ScaleType = Enum.ScaleType.Crop
-icone.ZIndex = 4
-Instance.new("UICorner", icone).CornerRadius = UDim.new(1, 0)
+-- Fundo
+local bg = create("Frame", {
+    Size = UDim2.fromScale(1, 1),
+    BackgroundColor3 = Color3.fromRGB(8, 8, 11),
+    BorderSizePixel = 0
+}, gui)
 
-local textoFundo = Instance.new("TextLabel", container)
-textoFundo.Size = UDim2.new(1, 0, 0, 30)
-textoFundo.Position = UDim2.new(0, 0, 0, 95)
-textoFundo.BackgroundTransparency = 1
-textoFundo.Text = "Rd4X Hub $ > Brookhaven RP 🇧🇷 <"
-textoFundo.TextColor3 = Color3.fromRGB(80, 80, 80)
-textoFundo.TextSize = 16
-textoFundo.Font = Enum.Font.GothamBold
-textoFundo.ZIndex = 4
+-- Brilho central
+local glow = create("Frame", {
+    AnchorPoint = Vector2.new(0.5, 0.5),
+    Position = UDim2.fromScale(0.5, 0.43),
+    Size = UDim2.fromOffset(330, 330),
+    BackgroundColor3 = Color3.fromRGB(100, 20, 12),
+    BackgroundTransparency = 0.88,
+    BorderSizePixel = 0
+}, bg)
 
-local textoBrilho = textoFundo:Clone()
-textoBrilho.TextColor3 = Color3.fromRGB(255, 255, 255)
-textoBrilho.ZIndex = 5
-textoBrilho.Parent = container
+create("UICorner", {
+    CornerRadius = UDim.new(1, 0)
+}, glow)
 
-local uigTexto = Instance.new("UIGradient", textoBrilho)
-uigTexto.Transparency = NumberSequence.new({
-    NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.4, 1), 
-    NumberSequenceKeypoint.new(0.5, 0), NumberSequenceKeypoint.new(0.6, 1), NumberSequenceKeypoint.new(1, 1)
+-- Partículas
+local particleFolder = Instance.new("Folder")
+particleFolder.Name = "Particles"
+particleFolder.Parent = bg
+
+local particleColors = {
+    Color3.fromRGB(180, 35, 25),
+    Color3.fromRGB(210, 65, 35),
+    Color3.fromRGB(160, 120, 55)
+}
+
+for i = 1, 24 do
+    local size = math.random(2, 5)
+
+    local particle = create("Frame", {
+        Size = UDim2.fromOffset(size, size),
+        Position = UDim2.fromScale(
+            math.random(),
+            math.random()
+        ),
+        BackgroundColor3 = particleColors[math.random(1, #particleColors)],
+        BackgroundTransparency = math.random(25, 65) / 100,
+        BorderSizePixel = 0
+    }, particleFolder)
+
+    create("UICorner", {
+        CornerRadius = UDim.new(1, 0)
+    }, particle)
+
+    task.spawn(function()
+        while gui.Parent and particle.Parent do
+            local x = math.random(5, 95) / 100
+            local y = math.random(5, 95) / 100
+
+            tween(particle, math.random(3, 7), {
+                Position = UDim2.fromScale(x, y),
+                BackgroundTransparency = math.random(25, 80) / 100
+            })
+
+            task.wait(math.random(3, 6))
+        end
+    end)
+end
+
+-- Conteúdo central
+local content = create("Frame", {
+    AnchorPoint = Vector2.new(0.5, 0.5),
+    Position = UDim2.fromScale(0.5, 0.46),
+    Size = UDim2.fromOffset(340, 270),
+    BackgroundTransparency = 1
+}, bg)
+
+-- Linha superior
+local topLine = create("Frame", {
+    AnchorPoint = Vector2.new(0.5, 0),
+    Position = UDim2.new(0.5, 0, 0, 0),
+    Size = UDim2.fromOffset(45, 2),
+    BackgroundColor3 = Color3.fromRGB(190, 45, 30),
+    BorderSizePixel = 0
+}, content)
+
+-- Logo
+local logo = create("TextLabel", {
+    AnchorPoint = Vector2.new(0.5, 0),
+    Position = UDim2.new(0.5, 0, 0, 25),
+    Size = UDim2.fromOffset(320, 82),
+    BackgroundTransparency = 1,
+    Text = "RD4X",
+    TextColor3 = Color3.fromRGB(225, 190, 115),
+    TextSize = 65,
+    Font = Enum.Font.GothamBlack,
+    TextXAlignment = Enum.TextXAlignment.Center
+}, content)
+
+create("UIStroke", {
+    Color = Color3.fromRGB(100, 65, 30),
+    Thickness = 0.7,
+    Transparency = 0.35
+}, logo)
+
+-- Nome do produto
+create("TextLabel", {
+    AnchorPoint = Vector2.new(0.5, 0),
+    Position = UDim2.new(0.5, 0, 0, 106),
+    Size = UDim2.fromOffset(300, 25),
+    BackgroundTransparency = 1,
+    Text = "H U B",
+    TextColor3 = Color3.fromRGB(230, 230, 230),
+    TextSize = 15,
+    Font = Enum.Font.GothamMedium
+}, content)
+
+-- Versão
+create("TextLabel", {
+    AnchorPoint = Vector2.new(0.5, 0),
+    Position = UDim2.new(0.5, 0, 0, 139),
+    Size = UDim2.fromOffset(300, 18),
+    BackgroundTransparency = 1,
+    Text = "BROOKHAVEN RP  •  BETA",
+    TextColor3 = Color3.fromRGB(125, 125, 135),
+    TextSize = 10,
+    Font = Enum.Font.GothamMedium
+}, content)
+
+-- Status
+local status = create("TextLabel", {
+    AnchorPoint = Vector2.new(0.5, 0),
+    Position = UDim2.new(0.5, 0, 0, 190),
+    Size = UDim2.fromOffset(300, 20),
+    BackgroundTransparency = 1,
+    Text = "Inicializando RD4X Hub...",
+    TextColor3 = Color3.fromRGB(205, 205, 210),
+    TextSize = 12,
+    Font = Enum.Font.Gotham
+}, content)
+
+-- Porcentagem
+local percentage = create("TextLabel", {
+    AnchorPoint = Vector2.new(0.5, 0),
+    Position = UDim2.new(0.5, 0, 0, 214),
+    Size = UDim2.fromOffset(300, 18),
+    BackgroundTransparency = 1,
+    Text = "0%",
+    TextColor3 = Color3.fromRGB(210, 75, 55),
+    TextSize = 11,
+    Font = Enum.Font.GothamBold
+}, content)
+
+-- Barra
+local barBackground = create("Frame", {
+    AnchorPoint = Vector2.new(0.5, 0),
+    Position = UDim2.new(0.5, 0, 0, 243),
+    Size = UDim2.fromOffset(260, 4),
+    BackgroundColor3 = Color3.fromRGB(35, 35, 40),
+    BorderSizePixel = 0
+}, content)
+
+create("UICorner", {
+    CornerRadius = UDim.new(1, 0)
+}, barBackground)
+
+local bar = create("Frame", {
+    Size = UDim2.fromScale(0, 1),
+    BackgroundColor3 = Color3.fromRGB(190, 45, 30),
+    BorderSizePixel = 0
+}, barBackground)
+
+create("UICorner", {
+    CornerRadius = UDim.new(1, 0)
+}, bar)
+
+create("UIGradient", {
+    Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(125, 20, 18)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(245, 85, 55))
+    })
+}, bar)
+
+-- Rodapé
+create("TextLabel", {
+    AnchorPoint = Vector2.new(0.5, 1),
+    Position = UDim2.new(0.5, 0, 1, -25),
+    Size = UDim2.fromOffset(300, 20),
+    BackgroundTransparency = 1,
+    Text = "RD4X DEVELOPMENT",
+    TextColor3 = Color3.fromRGB(75, 75, 85),
+    TextSize = 9,
+    Font = Enum.Font.GothamMedium
+}, bg)
+
+-- Entrada
+bg.BackgroundTransparency = 1
+content.Position = UDim2.fromScale(0.5, 0.49)
+
+tween(bg, 0.8, {
+    BackgroundTransparency = 0
 })
-uigTexto.Offset = Vector2.new(1, 0)
 
-local shineContainer = Instance.new("Frame", container)
-shineContainer.Size = UDim2.new(1, 0, 0, 50)
-shineContainer.Position = UDim2.new(0, 0, 0, 85)
-shineContainer.BackgroundTransparency = 1
-shineContainer.ClipsDescendants = true
-shineContainer.ZIndex = 6
-
-local feixeLuz = Instance.new("Frame", shineContainer)
-feixeLuz.Size = UDim2.new(0, 40, 2, 0)
-feixeLuz.Position = UDim2.new(-0.5, 0, -0.5, 0)
-feixeLuz.Rotation = 30
-feixeLuz.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-feixeLuz.BorderSizePixel = 0
-feixeLuz.ZIndex = 6
-
-local gradFeixe = Instance.new("UIGradient", feixeLuz)
-gradFeixe.Transparency = NumberSequence.new({
-    NumberSequenceKeypoint.new(0, 1), NumberSequenceKeypoint.new(0.5, 0.5), NumberSequenceKeypoint.new(1, 1)
+tween(content, 0.9, {
+    Position = UDim2.fromScale(0.5, 0.46)
 })
-gradFeixe.Rotation = 90
 
-task.spawn(function()
-    while shineContainer.Parent do
-        feixeLuz.Position = UDim2.new(-0.5, 0, -0.5, 0)
-        uigTexto.Offset = Vector2.new(1, 0) 
-        local animTime = TweenInfo.new(1.5, Enum.EasingStyle.Linear)
-        TweenService:Create(feixeLuz, animTime, {Position = UDim2.new(1.2, 0, -0.5, 0)}):Play()
-        TweenService:Create(uigTexto, animTime, {Offset = Vector2.new(-1, 0)}):Play()
-        task.wait(2.5)
+-- CARREGAMENTO DE 8,2 SEGUNDOS
+local TEMPO_CARREGAMENTO = 8.2
+local inicioCarregamento = os.clock()
+
+local stages = {
+    {0, "Inicializando RD4X Hub..."},
+    {2, "Carregando componentes..."},
+    {4, "Preparando funcionalidades..."},
+    {6, "Finalizando interface..."},
+    {8.2, "RD4X Hub iniciado!"}
+}
+
+tween(bar, TEMPO_CARREGAMENTO, {
+    Size = UDim2.fromScale(1, 1)
+})
+
+for i, stage in ipairs(stages) do
+    local restante = stage[1] - (os.clock() - inicioCarregamento)
+
+    if restante > 0 then
+        task.wait(restante)
+    end
+
+    if not gui.Parent then return end
+
+    status.Text = stage[2]
+
+    percentage.Text = math.floor(
+        math.clamp(
+            (os.clock() - inicioCarregamento) / TEMPO_CARREGAMENTO,
+            0,
+            1
+        ) * 100
+    ) .. "%"
+end
+
+percentage.Text = "100%"
+
+-- Botão para fechar a prévia
+local enter = create("TextButton", {
+    AnchorPoint = Vector2.new(0.5, 0),
+    Position = UDim2.new(0.5, 0, 0, 276),
+    Size = UDim2.fromOffset(150, 34),
+    BackgroundColor3 = Color3.fromRGB(125, 30, 23),
+    BackgroundTransparency = 0.1,
+    Text = "ENTRAR",
+    TextColor3 = Color3.fromRGB(255, 255, 255),
+    TextSize = 11,
+    Font = Enum.Font.GothamBold,
+    AutoButtonColor = true
+}, content)
+
+create("UICorner", {
+    CornerRadius = UDim.new(0, 6)
+}, enter)
+
+create("UIStroke", {
+    Color = Color3.fromRGB(210, 85, 55),
+    Transparency = 0.45,
+    Thickness = 1
+}, enter)
+
+enter.MouseButton1Click:Connect(function()
+    tween(bg, 0.6, {
+        BackgroundTransparency = 1
+    })
+
+    task.wait(0.65)
+
+    if gui then
+        gui:Destroy()
     end
 end)
-
-local status = Instance.new("TextLabel", container)
-status.Size = UDim2.new(1, 0, 0, 16)
-status.Position = UDim2.new(0, 0, 0, 135)
-status.BackgroundTransparency = 1
-status.Text = "Carregando módulos..."
-status.TextColor3 = COR_TEXTO_CINZA
-status.TextSize = 11
-status.Font = Enum.Font.Gotham
-status.ZIndex = 4
-
-local barBg = Instance.new("Frame", container)
-barBg.Size = UDim2.new(0, 300, 0, 6)
-barBg.Position = UDim2.new(0.5, -150, 0, 165)
-barBg.BackgroundColor3 = Color3.fromRGB(30, 30, 35)
-barBg.BorderSizePixel = 0
-barBg.ZIndex = 4
-Instance.new("UICorner", barBg).CornerRadius = UDim.new(1, 0)
-
-local barra = Instance.new("Frame", barBg)
-barra.Size = UDim2.new(0, 0, 1, 0)
-barra.BackgroundColor3 = COR_VERMELHO
-barra.BorderSizePixel = 0
-barra.ZIndex = 5
-Instance.new("UICorner", barra).CornerRadius = UDim.new(1, 0)
-
-local uigBarra = Instance.new("UIGradient", barra)
-uigBarra.Color = ColorSequence.new({ColorSequenceKeypoint.new(0, Color3.fromRGB(150, 0, 0)), ColorSequenceKeypoint.new(1, Color3.fromRGB(255, 100, 100))})
-
-TweenService:Create(barra, TweenInfo.new(8, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {Size = UDim2.new(1, 0, 1, 0)}):Play()
-
-task.spawn(function()
-    local mensagens = {"Carregando módulos...", "Verificando atualizações...", "Preparando interface...", "Quase pronto..."}
-    for i, msg in ipairs(mensagens) do
-        status.Text = msg
-        task.wait(2)
-    end
-end)
-
-task.delay(8.2, function()
-    _G.RD4X_Loading_Completo = true
-    TweenService:Create(bgLoad, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(container, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(textoFundo, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
-    TweenService:Create(textoBrilho, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
-    TweenService:Create(status, TweenInfo.new(0.4), {TextTransparency = 1}):Play()
-    TweenService:Create(barBg, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(barra, TweenInfo.new(0.4), {BackgroundTransparency = 1}):Play()
-    TweenService:Create(icone, TweenInfo.new(0.4), {ImageTransparency = 1}):Play()
-
-    task.wait(0.4)
-    loadingGui:Destroy()
-
-    MainFrame.Visible = true
-    MainFrame.Size = UDim2.new(0, 0, 0, 0)
-    MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
-    MainFrame.BackgroundTransparency = 1
-
-    TweenService:Create(MainFrame, TweenInfo.new(0.5, Enum.EasingStyle.Back, Enum.EasingDirection.Out), {
-        Size = UDim2.new(0, 560, 0, 400),
-        Position = UDim2.new(0.5, -280, 0.5, -200),
-        BackgroundTransparency = TRANSP_FUNDO
-    }):Play()
-end)
-
-local cornerMain = Instance.new("UICorner", MainFrame)
-cornerMain.CornerRadius = UDim.new(0, 10)
-
-local strokeMain = Instance.new("UIStroke", MainFrame)
-strokeMain.Color = COR_BORDA
-strokeMain.Thickness = 1.2
-strokeMain.Transparency = 0.3
-_G.RD4X_strokeMain = strokeMain
 
 --------------------------------------------------------------------------------
 -- BOLHAS FLUTUANTES DO MENU
