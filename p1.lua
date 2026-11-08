@@ -689,10 +689,24 @@ local stages = {
     {8.2, "RD4X Hub iniciado!"}
 }
 
-tween(bar, TEMPO_CARREGAMENTO, {
-    Size = UDim2.fromScale(1, 1)
-})
+task.spawn(function()
+    while gui.Parent do
+        local progresso = math.clamp(
+            (os.clock() - inicioCarregamento) / TEMPO_CARREGAMENTO,
+            0,
+            1
+        )
 
+        bar.Size = UDim2.fromScale(progresso, 1)
+        percentage.Text = math.floor(progresso * 100) .. "%"
+
+        if progresso >= 1 then
+            break
+        end
+
+        task.wait(0.03)
+    end
+end)
 for i, stage in ipairs(stages) do
     local restante = stage[1] - (os.clock() - inicioCarregamento)
 
