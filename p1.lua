@@ -739,6 +739,7 @@ create("UIStroke", {
     Thickness = 1
 }, enter)
 
+
 enter.MouseButton1Click:Connect(function()
     tween(bg, 0.6, {
         BackgroundTransparency = 1
@@ -749,6 +750,18 @@ enter.MouseButton1Click:Connect(function()
     if gui then
         gui:Destroy()
     end
+
+    -- MOSTRAR O MENU PRINCIPAL
+    MainFrame.Visible = true
+    MainFrame.Size = UDim2.new(0, 0, 0, 0)
+    MainFrame.Position = UDim2.new(0.5, 0, 0.5, 0)
+    MainFrame.BackgroundTransparency = 1
+
+    tween(MainFrame, 0.5, {
+        Size = UDim2.new(0, 560, 0, 400),
+        Position = UDim2.new(0.5, -280, 0.5, -200),
+        BackgroundTransparency = TRANSP_FUNDO
+    })
 end)
 
 --------------------------------------------------------------------------------
