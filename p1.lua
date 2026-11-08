@@ -414,6 +414,8 @@ MainFrame.ClipsDescendants = true
 MainFrame.ZIndex = 1
 MainFrame.Visible = false
 _G.RD4X_MainFrame = MainFrame
+local cMain = Instance.new("UICorner", MainFrame)
+cMain.CornerRadius = UDim.new(0, 10) -- ajuste o 10 pra gosto (8–14 fica bom)
 
 --------------------------------------------------------------------------------
 -- TELA DE CARREGAMENTO (PREMIUM + SCANNER EFFECT + CHUVA)
