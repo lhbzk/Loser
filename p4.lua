@@ -575,21 +575,33 @@ local function ColorirChangelog(texto)
     return table.concat(linhas, "\n")
     end
 
-    local adText = Instance.new("TextLabel", anuncio)
-    adText.Size = UDim2.new(1, -20, 1, -80)
-    adText.Position = UDim2.new(0, 10, 0, 48)
+        -- 📜 CRIA A ÁREA DE ROLAGEM (Scroll)
+    local adTextScroll = Instance.new("ScrollingFrame", anuncio)
+    adTextScroll.Size = UDim2.new(1, -20, 1, -80)
+    adTextScroll.Position = UDim2.new(0, 10, 0, 48)
+    adTextScroll.BackgroundTransparency = 1
+    adTextScroll.BorderSizePixel = 0
+    adTextScroll.ScrollBarThickness = 2
+    adTextScroll.ScrollBarImageColor3 = COR_VERDE -- Cor da barrinha de rolagem
+    adTextScroll.CanvasSize = UDim2.new(0, 0, 0, 0)
+    adTextScroll.AutomaticCanvasSize = Enum.AutomaticSize.Y -- Ajusta o tamanho sozinho baseado no texto
+    adTextScroll.ScrollingDirection = Enum.ScrollingDirection.Y
+    adTextScroll.ZIndex = 3
+
+    -- 📝 CRIA O TEXTO DENTRO DA ÁREA DE ROLAGEM
+    local adText = Instance.new("TextLabel", adTextScroll)
+    adText.Size = UDim2.new(1, 0, 0, 0) 
+    adText.AutomaticSize = Enum.AutomaticSize.Y -- Permite que o texto cresça para baixo
     adText.BackgroundTransparency = 1
-        adText.Text = ColorirChangelog([[
+    adText.Text = ColorirChangelog([[
 🎉 Bem-vindo ao Rd4X Hub!
 
 Este hub foi lançado a pouco tempo e já está com diversas funções!... Mas, essa é a primeira versão de muitas, por isso, se achar bugs/falhas nos conte no Discord!
 
 Fix: Menu principal
 Fix: Travamento na execução
-Fix: Lags
 Add: Loader
-Add: Pop-Up de updates
-Remove: Botões desnecessários
+Add: Pop-Up de updates.
 ]])
     adText.TextColor3 = COR_TEXTO
     adText.TextSize = 11
@@ -597,9 +609,9 @@ Remove: Botões desnecessários
     adText.TextXAlignment = Enum.TextXAlignment.Left
     adText.TextYAlignment = Enum.TextYAlignment.Top
     adText.TextWrapped = true
+    adText.RichText = true -- 🔥 ESSENCIAL
     adText.ZIndex = 3
-    adText.RichText = true   -- 🔥 ESSENCIAL
-
+    
     local adOk = Instance.new("TextButton", anuncio)
     adOk.Size = UDim2.new(1, -20, 0, 32)
     adOk.Position = UDim2.new(0, 10, 1, -42)
