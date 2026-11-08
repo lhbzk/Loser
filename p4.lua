@@ -579,7 +579,18 @@ local function ColorirChangelog(texto)
     adText.Size = UDim2.new(1, -20, 1, -80)
     adText.Position = UDim2.new(0, 10, 0, 48)
     adText.BackgroundTransparency = 1
-    adText.Text = "🎉 Bem-vindo ao Rd4X Hub!\n\nEste hub foi lançado a pouco tempo e já está com diversas funções!... Mas, essa é a primeira versão de muitas, por isso, se achar bugs/falhas nos conte no Discord!\nFix:Menu principal\nFix:Travamento na execução\nAdd:Loader\nAdd:Pop-Up de updates."
+        adText.Text = ColorirChangelog([[
+🎉 Bem-vindo ao Rd4X Hub!
+
+Este hub foi lançado a pouco tempo e já está com diversas funções!... Mas, essa é a primeira versão de muitas, por isso, se achar bugs/falhas nos conte no Discord!
+
+Fix: Menu principal
+Fix: Travamento na execução
+Fix: Lags
+Add: Loader
+Add: Pop-Up de updates
+Remove: Botões desnecessários
+]])
     adText.TextColor3 = COR_TEXTO
     adText.TextSize = 11
     adText.Font = Enum.Font.Gotham
