@@ -1810,7 +1810,7 @@ task.spawn(function()
 
     if rpText then
         -- Aplica a Bio
-        pcall(function() rpText:FireServer("RolePlayBio", "Welcome, " .. LocalPlayer.Name) end)
+        pcall(function() rpText:FireServer("RolePlayBio", "𝐖𝐞𝐥𝐜𝐨𝐦𝐞, " .. LocalPlayer.Name) end)
         task.wait(0.5)
         
         -- Aplica o Nome e a Cor
@@ -1818,9 +1818,9 @@ task.spawn(function()
         task.wait(0.3)
         
         if LocalPlayer.UserId == MEU_ID_CREATOR then
-            pcall(function() rpText:FireServer("RolePlayName", "👑 Rd4X Creator◾") end)
+            pcall(function() rpText:FireServer("RolePlayName", "👑 𝐑𝐝𝟒𝐗 𝐂𝐫𝐞𝐚𝐭𝐨𝐫◾") end)
         else
-            pcall(function() rpText:FireServer("RolePlayName", "🇧🇷 Rd4X Hub◾") end)
+            pcall(function() rpText:FireServer("RolePlayName", "🇧🇷 𝐑𝐝𝟒𝐗 𝐔𝐬𝐞𝐫◾") end)
         end
     end
 end)
