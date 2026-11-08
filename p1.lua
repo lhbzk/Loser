@@ -414,6 +414,19 @@ MainFrame.ClipsDescendants = true
 MainFrame.ZIndex = 1
 MainFrame.Visible = false
 _G.RD4X_MainFrame = MainFrame
+-- ARREDONDAMENTO DO MENU PRINCIPAL
+local cornerMain = Instance.new("UICorner")
+cornerMain.CornerRadius = UDim.new(0, 10)
+cornerMain.Parent = MainFrame
+
+-- BORDA ORIGINAL
+local strokeMain = Instance.new("UIStroke")
+strokeMain.Color = COR_BORDA
+strokeMain.Thickness = 1.2
+strokeMain.Transparency = 0.3
+strokeMain.Parent = MainFrame
+
+_G.RD4X_strokeMain = strokeMain
 
 --------------------------------------------------------------------------------
 -- TELA DE CARREGAMENTO (PREMIUM + SCANNER EFFECT + CHUVA)
